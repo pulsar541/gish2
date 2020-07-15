@@ -1,0 +1,88 @@
+class Pula: public Unit
+{public:
+	bool isLive;
+	float col1[3];
+	float col2[3];
+	float tr; 
+	bool isRed;
+	long ToL;
+	bool ACTUAL;
+
+	Pula (PointF pos, float dx,float dy)
+	{
+		isRed= false;
+		isLive = true;
+		ACTUAL = false;
+
+		x = pos.X;
+		y = pos.Y;
+
+		oldx = x-dx;
+		oldy = y-dy;
+
+		this->dx = dx;
+		this->dy = dy;
+		col1[0] = col1[1]=col1[2]  = 0;
+		col2[0] = 0.5
+			;  col2[1]=col2[2]  = 0;
+
+		tr=minirand()*100;
+		ToL=100;
+	}
+
+
+
+	void Show()
+	{	static float a =0 ;
+		pum
+		loff
+			glTranslatef(x,y,tr);
+			if(isLive)
+			{	glRotatef(a+=5,0,1,1);
+				glColor3f(0,0.2,0);
+			}
+
+			glScalef(10,10,10);
+			glutSolidTetrahedron();
+			don
+			lon
+
+		pom
+	}
+
+	void Die()
+	{
+		isLive = false;
+	}
+
+	vector<Primitive >::iterator p;
+
+	void Colliz(Primitive *ipr)
+	{
+
+	//	if(<0)
+	//		return;
+
+		if (!isLive) 
+			return;
+
+
+		if (!(ipr)->inBox(this))
+				return;
+
+			if((ipr)->PtInTriang(ToPointF(x,y)))
+			{	
+				int numNL = (ipr)->numNearLine(ToPointF(x,y));
+				for(int c=0; (ipr)->PtInTriang(ToPointF(x,y)) && c<500;c++)
+				{
+					x += (ipr)->GetLineNormal(numNL).X;
+					y += (ipr)->GetLineNormal(numNL).Y;
+				}
+				x -= dx;
+				y -= dy;				
+				Die();
+			}
+		
+	}
+
+};
