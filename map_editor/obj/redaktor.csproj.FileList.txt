@@ -1,0 +1,12 @@
+bin\Debug\redaktor.exe
+bin\Debug\redaktor.pdb
+obj\Debug\ResolveAssemblyReference.cache
+obj\Debug\redaktor.exe
+obj\Debug\redaktor.pdb
+obj\Debug\redaktor.MainForm.resources
+obj\Debug\redaktor.csproj.GenerateResource.Cache
+bin\Release\redaktor.exe
+obj\Release\ResolveAssemblyReference.cache
+obj\Release\redaktor.MainForm.resources
+obj\Release\redaktor.csproj.GenerateResource.Cache
+obj\Release\redaktor.exe

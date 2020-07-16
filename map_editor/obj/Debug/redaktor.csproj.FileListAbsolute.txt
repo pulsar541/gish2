@@ -1,0 +1,6 @@
+D:\_PROGRAMMING\Gish2redaktor\bin\Debug\redaktor.exe
+D:\_PROGRAMMING\Gish2redaktor\bin\Debug\redaktor.pdb
+D:\_PROGRAMMING\Gish2redaktor\obj\Debug\redaktor.MainForm.resources
+D:\_PROGRAMMING\Gish2redaktor\obj\Debug\redaktor.csproj.GenerateResource.Cache
+D:\_PROGRAMMING\Gish2redaktor\obj\Debug\redaktor.exe
+D:\_PROGRAMMING\Gish2redaktor\obj\Debug\redaktor.pdb
