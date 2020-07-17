@@ -207,7 +207,7 @@ class Building: public Unit
 			glDisable (GL_CULL_FACE);
 
 /*		
-	for( i=0; i<numLights; i++)
+	for(int i=0; i<numLights; i++)
 	{	
 		if(!onlgt[i])
 				continue;
@@ -261,7 +261,7 @@ class Building: public Unit
 
 	//	glBegin(GL_POLYGON);
 		
-	//		for( k=0;k<36;k++)
+	//		for(int k=0;k<36;k++)
 	//			{	
 	//			glVertex2f( x + cos(k*10*_torad)* radius*2,y + sin(k*10*_torad)* radius *2) ;
 	
@@ -287,7 +287,7 @@ class Building: public Unit
 				
 				
 			
-					for( i=0; i<numLights; i++)
+					for(int i=0; i<numLights; i++)
 					{
 						if(!onlgt[i]) 
 							continue;

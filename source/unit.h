@@ -2,7 +2,9 @@
 #define UNIT_H
 
 #include "gameobject.h"
+#include "mystuctures.h"
 #include "fvector.h"
+
 
 class Unit : public GameObject,public PointF
 	{

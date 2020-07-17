@@ -251,7 +251,7 @@
 			 if(onlgt[i]) numONLights++;
 
 						
-			for(i=0; i<numLights; i++)
+			for(int i=0; i<numLights; i++)
 			{
 				if(!onlgt[i]) 
 				continue;

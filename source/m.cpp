@@ -1,6 +1,3 @@
-// lab4.cpp : Defines the entry point for the console application.
-//
-
 #include "glut.h"
 #include <windows.h>
 #include <math.h>
@@ -14,10 +11,10 @@
 
 using namespace std;
 
-	float crossX ;
-	float crossY ;
+float crossX ;
+float crossY ;
+int curDescI, curDescJ;
 
-float SLOMO_K = 1;
 #include "mystuctures.h"
 #include "constants.h"
 #include "mygish.h"
@@ -26,6 +23,9 @@ float SLOMO_K = 1;
 #include "spisok.h"
 #include "scene.h"
 #include "levelManager.h"
+
+
+DESC desc[100][100];
 
 
 bool onlgt[2];
@@ -250,7 +250,7 @@ void Collisions()
 
 
 
-			for(  i=0;i<gish.N;i++)	
+			for(int  i=0;i<gish.N;i++)	
 			{
 				gish.bui[i]->inWater = false;
 				gish.bui[i]->onHard = false;
@@ -285,7 +285,7 @@ void Collisions()
 		//	float dy  = (float)cos((-90+ZROT)*_torad) * 0.05f;
 		gish.oldMed = gish.medium();
 
-			for( i=0;i<gish.N;i++)
+			for(int i=0;i<gish.N;i++)
 			{
 	
 				if(!gish.bui[i]->moveble) 
@@ -351,20 +351,20 @@ void Collisions()
 					int primi;
 					DescCollision(&weapon[k],&primi);	
 				
-					for ( int d  = 0; d < 10; d++)
+					for(int d  = 0; d < 10; d++)
 					if(d!=k) 
 						Proch(&weapon[k],&weapon[d], weapon[d].radius + weapon[k].radius);
 				
 
 	
-					for(d=0; door[d].corrected();d++)	
+					for(int d=0; door[d].corrected();d++)	
 					{
-						Proch(&weapon[k],&key[d], key[d].radius + weapon[k].radius);
+						Proch(&weapon[k], &key[d], key[d].radius + weapon[k].radius);
 					}
 				
 				
 				//	int ENEMY_ACTUAL_COUNT = n_enemy_actual.size();
-					for ( int j  = 0; j < ENEMY_ACTUAL_COUNT; j++)
+					for(int j  = 0; j < ENEMY_ACTUAL_COUNT; j++)
 					{
 							Proch(&weapon[k],&enemy[n_enemy_actual[j]], enemy[n_enemy_actual[j]].radius + weapon[k].radius);
 					}
@@ -376,10 +376,10 @@ void Collisions()
 			
 
 			
-				for(i=0; i<10;i++)
+				for(int i=0; i<10;i++)
 					weapon[k].impact[i].inWater = false;
 
-				for(i=0; i<10; i++)
+				for(int i=0; i<10; i++)
 				{
 					int iii,jjj;
 					GetQuadCoord(&iii,&jjj,	weapon[k].impact[i]);	
@@ -403,14 +403,14 @@ void Collisions()
  int j;
 						
 			
-				for (  j  = 0; j < ENEMY_ACTUAL_COUNT; j++)
+				for(int  j  = 0; j < ENEMY_ACTUAL_COUNT; j++)
 				{	
 					Enemy *tmpEnemy;  
 					tmpEnemy = &enemy[n_enemy_actual[j]];
 					tmpEnemy->inWater = false;
 					tmpEnemy->onHard  = false;
 					
-					for ( int k  = 0; k < ENEMY_ACTUAL_COUNT; k++)
+					for(int k  = 0; k < ENEMY_ACTUAL_COUNT; k++)
 					{	if(n_enemy_actual[j]==n_enemy_actual[k]) continue;
 						Enemy *tmpEnemy2; 
 						tmpEnemy2 = &enemy[n_enemy_actual[k]];
@@ -427,14 +427,14 @@ void Collisions()
 
 
 
-				for (  j  = 0; j < ENEMY_ACTUAL_COUNT; j++)
+				for(int  j  = 0; j < ENEMY_ACTUAL_COUNT; j++)
 				{	
 
 					Enemy *tmpEnemy;  
 					tmpEnemy = &enemy[n_enemy_actual[j]];
 	
 					
-					for( k=0; k<10;k++)
+					for(int k=0; k<10;k++)
 					{
 						tmpEnemy->impact[k].inWater = false;
 						tmpEnemy->impact[k].onHard = false;
@@ -446,7 +446,7 @@ void Collisions()
 
 						if(tmpEnemy->impact[k].onHard)tmpEnemy->impact[k].H = 0;
 
-						for (  d  = 0; d < ENEMY_ACTUAL_COUNT; d++)
+						for(int  d  = 0; d < ENEMY_ACTUAL_COUNT; d++)
 						{
 							if(d!=j) 
 							{
@@ -504,31 +504,36 @@ void Collisions()
 
 
 
-		
-			for(pBall=ball.begin(); pBall!=ball.end(); pBall++)
+			int k = 0;
+			Building* currBall;
+			for(pBall=ball.begin(); pBall!=ball.end(); pBall++, k++)
 			{
 
-		
-				for (  j  = 0; j < ENEMY_ACTUAL_COUNT; j++)
+		 
+				currBall = &ball.at(k);
+
+			 
+				 
+				for(int  j  = 0; j < ENEMY_ACTUAL_COUNT; j++)
 				{	
 
 					
 					Enemy *tmpEnemy;  
 					tmpEnemy = &enemy[n_enemy_actual[j]];
 					if(tmpEnemy->health > 0)
-						Proch(tmpEnemy,pBall, pBall->radius + tmpEnemy->radius);
+						Proch((Unit*)tmpEnemy, currBall, (currBall->radius + tmpEnemy->radius));
 
 				}
 
 
 				int primi;
-				DescCollision(pBall,&primi);
+				DescCollision(currBall, &primi);
 
 
 				pBall->CalcVector();
 				pBall->CalcDxDy();
 				pBall->Move();
-			/*	for( int i=0;i<gish.N;i++)	
+			/*	for(int int i=0;i<gish.N;i++)	
 				{
 
 					if(gish.LIP && Dist(gish.bui[i],pBall)<gish.bui[i]->radius+pBall->radius+5)
@@ -692,7 +697,7 @@ void myIdle()
 //	}
 	
   // int numEnemyActual = n_enemy_actual.size();
-    for( n=0; n < enemyCount; n++)
+    for(int n=0; n < enemyCount; n++)
 	{ //  if(	enemy[n_enemy_actual[n]].health>0)
 			enemy[n].timer();
 			
@@ -706,7 +711,7 @@ void myIdle()
    { starttime2 += time_2; 
 	
    /*   int numEnemyActual = n_enemy_actual.size();
-	  for( n=0; n < numEnemyActual; n++)
+	  for(int n=0; n < numEnemyActual; n++)
 	  {
 	   enemy[n_enemy_actual[n]].setGoal(gish.medium().x, gish.medium().y);
 
@@ -859,7 +864,7 @@ void myIdle()
 			int ENEMY_ACTUAL_COUNT = n_enemy_actual.size();
 			float dist = 10000000000;
 			int numnearEnemy = -1;
-			for ( int j  = 0; j < ENEMY_ACTUAL_COUNT; j++)
+			for(int int j  = 0; j < ENEMY_ACTUAL_COUNT; j++)
 			{
 				if(enemy[n_enemy_actual[j]].health>0)
 				{
@@ -906,7 +911,7 @@ void myIdle()
 					weapon[BOMB].health-= minirand()*3;
 				}
 
-				for( int i=0;i<gish.N;i++)	
+				for(int i=0;i<gish.N;i++)	
 				{
 
 					if(Dist(gish.bui[i],tmpEnemy)<tmpEnemy->radius)
@@ -935,7 +940,7 @@ void myIdle()
 				
 				
 				for(int k=0;k<10;k++)
-				{		for( int i=0;i<gish.N;i++)
+				{		for(int i=0;i<gish.N;i++)
 						if(Dist(&gish.medium(), &tmpEnemy->impact[k])<tmpEnemy->radius + 20)
 						{
 						gish.H -= minirand()*10;
@@ -1032,7 +1037,7 @@ int k;
 		  }
 		  k=0;
 
-		  for( i=curDescI, k=0; k<4; i--, k++ )
+		  for(int i=curDescI, k=0; k<4; i--, k++ )
 		  {
 			  if(i>=0 && i<100)
 				researched[i][curDescJ] = true;
@@ -1055,7 +1060,7 @@ int k;
 		  k=0;
 
 
-		  for( j=curDescJ; k<4; j--, k++ )
+		  for(int j=curDescJ; k<4; j--, k++ )
 		  {
 			  if(j>=0 && j<100)
 				researched[curDescI][j] = true;
@@ -1064,7 +1069,7 @@ int k;
 			  else 	 	  break;
 		  }
 	
-		  for( i=curDescI-1; i<curDescI+2; i++)
+		  for(int i=curDescI-1; i<curDescI+2; i++)
 		  for(int j=curDescJ-1; j<curDescJ+2; j++)
 		  {	 
 			  
@@ -1083,7 +1088,7 @@ int k;
 	
 //	if(gish.LIP)
 		for(int i=0;i<gish.N;i++)
-			for( k=0;k<MAXWEAPONTYPES;k++)
+			for(int k=0;k<MAXWEAPONTYPES;k++)
  			if(k!=gish.currentWeapon && k!=BOMB
 				&& weapon[gish.currentWeapon].y > weapon[k].y 
 				&& Dist(&weapon[gish.currentWeapon],&weapon[k]) < weapon[k].radius*2.2 )
@@ -1101,7 +1106,7 @@ int k;
 
 
 
-	  for(  i=0;i<gish.N;i++)	
+	  for(int  i=0;i<gish.N;i++)	
 	  {
 		  if(Dist(gish.bui[i], gish.bui[gish.soot(i)]) < 20  )
 			  gish.H -= 1;
@@ -1121,7 +1126,7 @@ int k;
 
 	  }
 
-	 for( k=0; key[k].corrected(); k++)
+	 for(int k=0; key[k].corrected(); k++)
 	 {
 		 if(key[k].spirit)
 			 key[k].setPos(gish.bui[key[k].NUM]->x , gish.bui[key[k].NUM]->y);
@@ -1132,7 +1137,7 @@ int k;
 		Collisions();
 
 		int ENEMY_ACTUAL_COUNT = n_enemy_actual.size();
-		for ( n = 0; n < ENEMY_ACTUAL_COUNT; n++)
+		for(int n = 0; n < ENEMY_ACTUAL_COUNT; n++)
 		{
 		  
 		   	enemy[n_enemy_actual[n]].Controller();
@@ -1156,7 +1161,7 @@ int k;
 				gish.bui[i]->Move();
 			}
 
-			for( i=0;i<gish.N ;i++)
+			for(int i=0;i<gish.N ;i++)
 			{
 
 				gish.bui[i]->CalcVector();
@@ -1168,19 +1173,22 @@ int k;
 			}
 		}*/
 
-
-
-				
-			for(pBall=ball.begin(); pBall!=ball.end(); pBall++)
-			{
-
+ 
+			Building* currBall;
+	    
 		
-				for (  int j  = 0; j < ENEMY_ACTUAL_COUNT; j++)
+			 
+			int o = 0;
+			for(pBall=ball.begin(); pBall!=ball.end(); pBall++, o++)
+			{
+				currBall = &ball.at(o);
+				 
+				for(int  j  = 0; j < ENEMY_ACTUAL_COUNT; j++)
 				{	
 
 					Enemy *tmpEnemy;  
 					tmpEnemy = &enemy[n_enemy_actual[j]];
-					if(Dist(pBall,tmpEnemy)<tmpEnemy->radius+pBall->radius)
+					if(Dist(currBall,(Unit*)tmpEnemy)<tmpEnemy->radius+pBall->radius)
 					{
 						tmpEnemy->health = 0;
 					}
@@ -1188,7 +1196,7 @@ int k;
 			}
 
 		
-		  for( k=0; k<10; k++)
+		  for(int k=0; k<10; k++)
 		  {		if(k==SUPER_WEAPON) 
 				{
 				 if(weapon[k].fire)	
@@ -1206,14 +1214,14 @@ int k;
 				if(k == GRENADE || k==BLASTER || k==ROCKET_LAUNCHER)
 				{			
 					int ENEMY_ACTUAL_COUNT = n_enemy_actual.size();
-					for ( int j  = 0; j < ENEMY_ACTUAL_COUNT; j++)
+					for(int j  = 0; j < ENEMY_ACTUAL_COUNT; j++)
 					{
 						if(	enemy[n_enemy_actual[j]].health>0)	
 						{
 							Enemy *tmpEnemy;  
 							tmpEnemy = &enemy[n_enemy_actual[j]];
 						
-							for( int i=0;i<10;i++)	
+							for(int i=0;i<10;i++)	
 							{					
 		
 								if(weapon[k].impact[i].H > 0 )
@@ -1263,7 +1271,7 @@ int k;
 							int ENEMY_ACTUAL_COUNT = n_enemy_actual.size();
 							float dist = 10000000000;
 							int numnearEnemy = -1;
-							for ( int j  = 0; j < ENEMY_ACTUAL_COUNT; j++)
+							for(int j  = 0; j < ENEMY_ACTUAL_COUNT; j++)
 							{
 							//	if(enemy[n_enemy_actual[j]].health>0)
 								{
@@ -1370,14 +1378,14 @@ void CreateLines(char *path)
 				weapon[i].set(i);
 
 
-			for( i=0; i< enemyCount; i++)
+			for(int i=0; i< enemyCount; i++)
 			{
 				enemy[i].correct=false;
 				enemy[i].setPos(4000000,4000000);
 
 			}
 		//	int NUMPRIMS = prim.size();
-				for( n = 0;  n<MAXPRIMCOUNT; 	n++)
+				for(int n = 0;  n<MAXPRIMCOUNT; 	n++)
 				{   
 					prim[n].type = 0;
 	     			prim[n].A.x = 3000000;
@@ -1424,16 +1432,16 @@ void CreateLines(char *path)
 
 
 			int j;	
-			for( j=0; j<100; j++)
+			for(int j=0; j<100; j++)
 					for(int i=0; i<100; i++)
 						dat[i][j] = '1';
 
-			for( j=0; j<100; j++)
+			for(int j=0; j<100; j++)
 					for(int i=0; i<100; i++)
 						dat[i][j] = '0';
 
 
-				for( j=0; j<100; j++)
+				for(int j=0; j<100; j++)
 				{	for(int i=0; i<100; i++)
 					{
 						dat[i][j] =  getc(fp);
@@ -1455,7 +1463,7 @@ void CreateLines(char *path)
 				 keyCount = 0;
 				 itemCount = 0;
 				
-				for( j=0; j<100; j++)
+				for(int j=0; j<100; j++)
 				{
 
 
@@ -1860,14 +1868,14 @@ void CreateLines(char *path)
 
 
 
-///	for( i=0; door[i].corrected(); i++)
+///	for(int i=0; door[i].corrected(); i++)
 //		cout<<i<<endl;
 
 
 			
 
 	
-	for( i=0;i<MAXWEAPONTYPES-1;i++)
+	for(int i=0;i<MAXWEAPONTYPES-1;i++)
 	{
 		if(i!=BOMB)
 			if(i!=DETONATOR)
@@ -1898,7 +1906,7 @@ void CreateLines(char *path)
 							}
 					
 						
-							for( itemCount=0;itemCount<MAXITEMS;itemCount++)
+							for(int itemCount=0;itemCount<MAXITEMS;itemCount++)
 							{
 
 								item[itemCount].setPos(
@@ -2367,7 +2375,7 @@ void ShowUnits()
 				ShowCheckPoint(&checkPoint[n]);
 		}
 
-		for( n=0;n<itemCount; n++)
+		for(int n=0;n<itemCount; n++)
 		{
 			if(underCameraUnit (item[n],  camera,12) && researchedUnit(item[n]))
 				ShowItem(&item[n]);
@@ -2376,7 +2384,7 @@ void ShowUnits()
 		
 			
 			int ENEMY_ACTUAL_COUNT = n_enemy_actual.size();
-			for ( n = 0; n < ENEMY_ACTUAL_COUNT; n++)
+			for(int n = 0; n < ENEMY_ACTUAL_COUNT; n++)
 			{ //  if(	enemy[n_enemy_actual[n]].health>0)
 				
 				pum
@@ -2388,7 +2396,7 @@ void ShowUnits()
 			}
 		
 			pum
-			for ( i = 0; i<keyCount; i++)
+			for(int i = 0; i<keyCount; i++)
 			{  
 				ShowKey(&key[i]);
 			}
@@ -2581,7 +2589,7 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 				glBegin(GL_TRIANGLES);
 		
 
-				 for ( n = iii-area; n<=iii+area; n++)
+				 for(int n = iii-area; n<=iii+area; n++)
 				  for(int m = jjj-area; m<=jjj+area; m++)
 				  {  
 					  
@@ -2597,7 +2605,7 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 
 
 
-				 for ( n = iii-area; n<=iii+area; n++)
+				 for(int n = iii-area; n<=iii+area; n++)
 				  for(int m = jjj-area; m<=jjj+area; m++)
 				  {  
 					  if(n >=0 && m>=0 && n<100 && m<100)
@@ -2611,7 +2619,7 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 				  }
 
 
-				 for ( n = iii-area; n<=iii+area; n++)
+				 for(int n = iii-area; n<=iii+area; n++)
 				  for(int m = jjj-area; m<=jjj+area; m++)
 				  {  
 					  if(n >=0 && m>=0 && n<100 && m<100)
@@ -2632,7 +2640,7 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 		 		glColor4f(.2,.2,.2,0.7);
 			//	glColor3f(.5, 1,.5);
 				int z = - prim[0].Width;
-				 for ( n = iii-area; n<=iii+area; n++)
+				 for(int n = iii-area; n<=iii+area; n++)
 				  for(int m = jjj-area; m<=jjj+area; m++)
 				  {  
 				//	  if(n >=0 && m>=0 && n<100 && m<100)
@@ -2691,7 +2699,7 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 		 		 glColor4f(1,1,1,0.1);
 
 				 z =  prim[0].Width+1;
-				 for ( n = iii-area; n<=iii+area; n++)
+				 for(int n = iii-area; n<=iii+area; n++)
 				  for(int m = jjj-area; m<=jjj+area; m++)
 				  {  
 				//	  if(n >=0 && m>=0 && n<100 && m<100)
@@ -2747,7 +2755,7 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 				loff
 				glBegin(GL_TRIANGLES);
 			
-				for ( n = iii-area; n<=iii+area; n++)
+				for(int n = iii-area; n<=iii+area; n++)
 				  for(int m = jjj-area; m<=jjj+area; m++)
 				  {  
 					  if(n >=0 && m>=0 && n<100 && m<100)

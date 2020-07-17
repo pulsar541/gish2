@@ -2,12 +2,14 @@
 #define _impact_h_
 
 
+#include "unit.h"
+
 enum ImpactType 
 {BALL,
  LINE,
  _MAX_IMPACT_TYPE_
 };
-
+ 
 class Impact: public Unit
 {
 public:
@@ -28,6 +30,13 @@ public:
 		typeOfImpact = EVIL;
 	}
 
+
+
+	 
+    void actionOnTime(int numAction)
+	{
+
+	}
 
 };
 

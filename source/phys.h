@@ -99,7 +99,7 @@
 									u2->x-= 0.001*(u2->x - u1->x);	
 						}		
 
-					for( c=0;Dist(u1,u2)-(dist)<0 && c<1000;c++)
+					for(int c=0;Dist(u1,u2)-(dist)<0 && c<1000;c++)
 						{
 
 									u1->y+= 0.001*(u1->y - u2->y);
@@ -119,7 +119,7 @@
 
 			
 			int c;
-					for( c=0;Dist(u1,u2)-(dist)>0 && c<K;c++)
+					for(int c=0;Dist(u1,u2)-(dist)>0 && c<K;c++)
 						{
 		
 									u1->y-= 0.01*(u1->y - u2->y);
@@ -129,7 +129,7 @@
 						}	
 				
 
-					for( c=0;Dist(u1,u2)-(dist)<0 && c<K;c++)
+					for(int c=0;Dist(u1,u2)-(dist)<0 && c<K;c++)
 						{
 
 									u1->y+= 0.01*(u1->y - u2->y);
@@ -157,7 +157,7 @@
 
 						}		
 
-					for( c=0;Dist(u1,u2)-(dist)<0 && c<1000;c++)
+					for(int c=0;Dist(u1,u2)-(dist)<0 && c<1000;c++)
 						{
 
 									u1->y+= 0.01*(u1->y - u2->y);
@@ -172,7 +172,7 @@
 			for(int i=n1;i<n2;i++)			
 				SVIAZKA(u[i],u[i+1], dist ,k);	
 			
-			for( i=n1+1;i<n2+1;i++)			
+			for(int i=n1+1;i<n2+1;i++)			
 				SVIAZKA(u[i],u[i-1], dist ,k);	
 
 		}
@@ -182,11 +182,18 @@
 		void TROS(vector<Building> *ball,float dist,int k)
 		{
 	
-			vector<Building>::iterator pBall;
-			for(pBall=ball->begin(); pBall!=ball->end()-1; pBall++)
+			//vector<Building>::iterator pBall;
+			//for(pBall=ball->begin(); pBall!=ball->end()-1; pBall++)
+			int N = ball->size();
+			Building* pBall;
+			Building* pBallNext;
+			for (int i = 0; i < N-1; i++)
 			{
 
-				S_VIAZKA(pBall,pBall+1, dist ,k);	
+				pBall = &ball->at(i);
+				pBallNext = &ball->at(i+1);
+				 
+				S_VIAZKA(pBall,pBallNext, dist ,k);	
 			}
 			
 		}
@@ -343,7 +350,7 @@
 				if(u->radius > 0)
 				{
 					
-					for( c=0;c<3;c++)
+					for(int c=0;c<3;c++)
 					{
 					
 				

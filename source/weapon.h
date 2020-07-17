@@ -29,6 +29,11 @@ public:
 	float impactVectorX,impactVectorY;
 	float health;
 	bool active;
+
+	Weapon() {
+	
+	}
+
 	void set(int type)
 	{
 		this->type = type;
@@ -221,7 +226,8 @@ public:
 								impact[7].setPos(x+impactVectorX*impactSpeed+(minirand()*500-250),y+impactVectorY*impactSpeed+(minirand()*500-250));
 								impact[8].setPos(x+impactVectorX*impactSpeed+(minirand()*500-250),y+impactVectorY*impactSpeed+(minirand()*500-250));
 								
-								for(int i=1; i<9; i++)impact[i].H = 100;
+								for(int i=1; i<9; i++)
+									impact[i].H = 100;
 
 
 								re = true;

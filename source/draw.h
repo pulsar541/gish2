@@ -32,7 +32,7 @@ void ShowGish(MyGish *mygish)
 			lon 
 		
 			glBegin(GL_TRIANGLES);
-			for( i=0;i<mygish->N-1;i++)
+			for(int i=0;i<mygish->N-1;i++)
 			{	//glColor3f(mygish->bui[i]->cred,   mygish->bui[i]->cgreen, mygish->bui[i]->cblue);
 				
 			
@@ -84,7 +84,7 @@ void ShowGish(MyGish *mygish)
 		{
 
 			glBegin(GL_TRIANGLES);
-			for( i=0;i<mygish->N-1;i++)
+			for(int i=0;i<mygish->N-1;i++)
 			{
 
 			//	glColor3f(bui[i]->cred,   bui[i]->cgreen, bui[i]->cblue);
@@ -117,7 +117,7 @@ void ShowGish(MyGish *mygish)
 		{
 
 		/*	glBegin(GL_TRIANGLES);
-			for( i=0;i<mygish->N-1;i++)
+			for(int i=0;i<mygish->N-1;i++)
 			{
 				float xi = (mygish->bui[i]->x + mygish->medium().x)/2;
 				float yi = (mygish->bui[i]->y + mygish->medium().y)/2;
@@ -140,7 +140,7 @@ void ShowGish(MyGish *mygish)
 		*/
 			lon;
 	
-			for( i=0;i<mygish->N;i++)
+			for(int i=0;i<mygish->N;i++)
 			{
 	
 
@@ -248,7 +248,7 @@ void ShowGish(MyGish *mygish)
 			glColor4f(0,0,0.4,0.4);
 			glBegin(GL_TRIANGLE_FAN);
 				glVertex3f(mygish->medium().x, mygish->medium().y ,80);				
-			for( i=0;i<mygish->N;i++)
+			for(int i=0;i<mygish->N;i++)
 				glVertex3f(mygish->bui[i]->x, mygish->bui[i]->y , 40);
 			glEnd();
 
@@ -480,7 +480,7 @@ void ShowLimit()
 		pum;
 			glBegin(GL_QUADS);
 			glNormal3f(-1,0,0);
-			for( j=-30;j<150;j+=30)		
+			for(int j=-30;j<150;j+=30)		
 			for(int i=0;i<limitY;i+=30)
 			{
 				glVertex3f(limitX,i,  j);

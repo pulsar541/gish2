@@ -1,19 +1,28 @@
 #ifndef _gameobject_h_
 #define _gameobject_h_
 
+#include <windows.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
 #include <vector>
+#include <time.h>
+
 
 #define GOOD 0
 #define EVIL 1
 
 #define MAX_INTERVALS 8
+
+
 class GameObject
 {
 private:
 	int intervals[MAX_INTERVALS];
 public:
-	DWORD starttime[MAX_INTERVALS];
-	DWORD time[MAX_INTERVALS];
+	unsigned long starttime[MAX_INTERVALS];
+	unsigned long time[MAX_INTERVALS];
 	int typeOfImpact;
 //	vector<int> intervals;
 //	vector<int>	::iterator pInter;
@@ -61,7 +70,7 @@ public:
 			time[i] = timeGetTime()-starttime[i]; 
 
 		bool flag = false;
-		for( i=0;i<MAX_INTERVALS;i++)
+		for(int i=0;i<MAX_INTERVALS;i++)
 		{
 		  if ( intervals[i]!=0 && (time[i] >= intervals[i] || starttime[i] == timeGetTime()) )
 		  {	starttime[i] += time[i];

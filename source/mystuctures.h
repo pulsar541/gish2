@@ -1,7 +1,7 @@
 #ifndef MY_STRUCTURES
 #define MY_STRUCTURES
 
-
+ 
 class PointF
 {public:
 		float x;
@@ -24,11 +24,8 @@ public:
 		num1=0; num2=0;
 	}
 };
-
-DESC desc[100][100];
-
-int curDescI, curDescJ;
-
+ 
+ 
 class Point3d
 {public:
  float x,y,z;	

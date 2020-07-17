@@ -98,7 +98,7 @@ void spisok()
 		//glNormal3f(0,0,-1);
 
 		for(int j=0;j<limitY;j+=limitY*0.04)	
-		for( i=0;i<limitX;i+=limitX*0.04)
+		for(float i=0;i<limitX;i+=limitX*0.04)
 		{		
 
 			if(rand()%100>70)

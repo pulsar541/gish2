@@ -22,7 +22,7 @@ public:
 	
 	}
 
-	setType(int type)
+	void setType(int type)
 	{
 		this->type = type;
 		

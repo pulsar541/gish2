@@ -1,6 +1,7 @@
 #ifndef F_VECTOR_H
 #define F_VECTOR_H
-
+ 
+#define SLOMO_K 1.0f
 
 	/// <summary>
 	/// Summary description for FVector.
@@ -73,7 +74,11 @@
 	};
 
 
-	void ResultofAddVect(FVector *FRES,FVector A,FVector  B)
+
+
+#endif
+
+	/*	void ResultofAddVect(FVector *FRES,FVector A,FVector  B)
 	{
 
 		FRES->x0=A.x0;
@@ -81,8 +86,5 @@
  		FRES->x1=A.x1+B.x1-FRES->x0;
 		FRES->y1=A.y1+B.y1-FRES->y0;
 	}
- 
+ */
 
-
-
-#endif
