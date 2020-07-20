@@ -1,3 +1,4 @@
+ 
 #include "glut.h"
 #include <windows.h>
 #include <math.h>
@@ -2315,6 +2316,7 @@ int main(int argc, char* argv[])
 	glutIdleFunc(myIdle);
 
 
+	setDay();
 
 
 	//if(minirand()>0.5)setDay();
@@ -2445,11 +2447,18 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 
 	int lightNumber = 1;
  
-/*	setLocalLight(lightNumber, 	gish.medium().x, gish.medium().y ,0*150,
-		1,weapon[BOMB].health/100,weapon[BOMB].health/100,
+	setLocalLight(lightNumber, 	
+		gish.medium().x, 
+		gish.medium().y , 
+		150,
+
+		1,
+		weapon[BOMB].health/100,
+		weapon[BOMB].health/100,
+
 		0.000001 );
 	
-	lightNumber++;*/
+	lightNumber++;
 
 
 	 if(prim[desc[curDescI][curDescJ].num2].type == HYDRO  )
@@ -2570,7 +2579,7 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 
 			
 
-	
+				blon
 			ShowUnits();
 			if(interval == 0)
 			{
