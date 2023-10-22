@@ -18,6 +18,7 @@ float limitY=SIZE2*100;
 #define ICE	  2
 #define SAND  3
 #define FORBOMB  4
+ 
 
 struct PrimitiveView
 {
@@ -83,10 +84,14 @@ public:
 
 	
 
-		if(type!=HYDRO)
-		Width = 100 ;
+		//if(type!=HYDRO)
+		//Width = 100 ;
 
 		this->Width=Width;
+
+
+		if(type==HYDRO) this->Width *= 0.95f;
+
 
 		setPos (a,b,c);
 /*
@@ -342,7 +347,13 @@ public:
 		boxMAX.y = MAX(A.y, MAX(B.y,C.y)); 
 		medx= (A.x+B.x+C.x)/3;
 		medy= (A.y+B.y+C.y)/3;
-	
+
+		UpdateMediumPos();
+	}
+
+
+	void UpdateMediumPos()
+	{ 
 		st_medium.x = (boxMIN.x + boxMAX.x) /2;
 		st_medium.y = (boxMIN.y + boxMAX.y) /2;	
 	}

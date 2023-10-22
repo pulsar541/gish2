@@ -55,7 +55,7 @@ public:
 		tmpcolor[2] = color[2] = 1;
 		tmpcolor[3] = color[3] = 1;
 		SetPos(limitX/2,limitY/2);
-		currentWeapon = 1;		
+		currentWeapon = WeaponTypes::GRENADE;
 	//	impact
 	}
 
@@ -142,27 +142,29 @@ public:
 
 	void Kaplya()
 	{	
+		float elementsDist = 10; // 12.4
+
 		int K=25;
-		int L=90;
+		int L = 70; // 90;
 
 		if(H>0) 
 		{	
-			TROS ((Unit**)bui,0,N-1,12.4,1000);	
-			SVIAZKA (bui[0],bui[N-1],12.4,1000);
+			TROS ((Unit**)bui,0,N-1, elementsDist,1000);
+			SVIAZKA (bui[0],bui[N-1], elementsDist,1000);
 		}
 
 			for(int i=0;i<N;i++)
 			{
 				if(TVER)
 					{K=2000;
-					 L=100;
+					 L = 80; //100;
 
 					 bui[i]->y-=0.1;
 					}
 
 				K=180000/SQR(diameter=Dist(bui[i],bui[soot(i)])) ;
 
-				PROCH(bui[i],bui[soot(i)],L+12.4,K);
+				PROCH(bui[i],bui[soot(i)],L+ elementsDist,K);
 			
 			}	
 		
@@ -287,11 +289,14 @@ void AdditionColliz(Primitive *primitive,
 				//	}
 
 
-					if(H > 0 && jump)				
-					{ f+=6;
-					 bui[N]->x += f * primitive->GetLineNormal(numNL).x ;
-					 bui[N]->y += f * primitive->GetLineNormal(numNL).y ;
-					}
+
+					if(primitive->type != SAND)
+						if(H > 0 && jump)				
+						{ f+=3;
+						 bui[N]->x += f * primitive->GetLineNormal(numNL).x ;
+						 bui[N]->y += f * primitive->GetLineNormal(numNL).y ;
+						}
+
 					f=1;
 
 				//	if(!SKOL)

@@ -17,7 +17,8 @@ float minirand()
 
 
 int interrRand(int a, int b)
-{ return a + rand()%(b-a);
+{
+	return   a + rand() % (b - a);
 }
 
 double FSIN(float x)
@@ -80,10 +81,7 @@ bool isGraphActual(PointF a,Unit b)
 
 PointF ToPointF(float x,float y)
 {
-		PointF rezp;
-		rezp.x = x;
-		rezp.y = y;
-		return rezp;
+		return PointF(x, y);
 }
 
 

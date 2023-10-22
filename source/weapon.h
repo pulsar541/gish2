@@ -3,12 +3,12 @@
 
 
 enum WeaponTypes{
- LAMP			,
- PISTOL			,
- GUN				,
- AUTOMAT			,
+ //LAMP			,
+ //PISTOL			,
+ //GUN				,
+ //AUTOMAT			,
  GRENADE			,
- MACHINE_GUN		,
+ //MACHINE_GUN		,
  BLASTER			,
  ROCKET_LAUNCHER ,
  SUPER_WEAPON	,
@@ -54,14 +54,14 @@ public:
 		active=true;
 		switch (type)
 		{
-
+/*
 			case LAMP:	
 				radius=15;
 				setFriction(false);
 				setMassive(true);
-				setInterval(0, 50);
+				setInterval(0, 50);*/
 			break;
-
+/*
 			case PISTOL:
 				setInterval(0, 500);
 				impactSpeed   = 2000;
@@ -83,7 +83,7 @@ public:
 				setInterval(0, 50);
 				setInterval(1, 25);
 				impactSpeed   = 2000;
-			break;
+			break;*/
 
 
 			case GRENADE:
@@ -162,13 +162,14 @@ public:
 		if(health < 0)
 			health = 0;
 
+		/*
 		if(type == LAMP  && numInterval == 0)
 		{
 			//if(!inWater) 
 				y-=0.05;
 	
-		}
-
+		}*/
+/*
 		if(re)
 		{
 			switch (type)
@@ -185,7 +186,7 @@ public:
 					break;
 			}
 
-		}
+		}*/
 
 
 		if(fire)
@@ -193,7 +194,7 @@ public:
 			switch (type)
 			{
 
-				case PISTOL:
+				/*case PISTOL:
 				case AUTOMAT:
 				case MACHINE_GUN:				
 					switch(numInterval)
@@ -205,8 +206,8 @@ public:
 							break;
 
 					}
-				break;
-
+				break;*/
+				/*
 				case GUN:
 
 					switch(numInterval)
@@ -236,7 +237,7 @@ public:
 
 					}
 				break;
-			
+			*/
 				case GRENADE:
 				
 					switch(numInterval)

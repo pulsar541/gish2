@@ -8,7 +8,7 @@ void spisok()
 	glNewList(50005,GL_COMPILE);
 	pum;
 
-		glTranslatef(0,0,-1000);	
+		glTranslatef(0,0,-2000);	
 	
 //	glEnable(GL_POLYGON_SMOOTH);
 		glNormal3f(0,0,1);
@@ -68,15 +68,15 @@ void spisok()
 			}
 */
 
-
+		float z = minirand() * 1000;
 //
 			{
 	//	//	glColor3f(0,0,0);	
 		//	glBegin(GL_QUADS);
-			glVertex3f(i,j,0);
-			glVertex3f(i+limitX*0.03,j,0);
-			glVertex3f(i+limitX*0.03,j+limitY*0.03,0);
-			glVertex3f(i,j+limitY*0.03,0);
+			glVertex3f(i,j,z);
+			glVertex3f(i+limitX*0.03,j,z);
+			glVertex3f(i+limitX*0.03,j+limitY*0.03,z);
+			glVertex3f(i,j+limitY*0.03,z);
 
 		//	glEnd();
 			}

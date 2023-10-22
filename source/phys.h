@@ -274,12 +274,12 @@
 		int c=0;
 		int numNL = 0;
 		if(primitive == NULL)
-		{	MessageBox(NULL,"primitive == NULL","primitive == NULL",MB_OK);
+		{	//MessageBox(NULL,"primitive == NULL","primitive == NULL",MB_OK);
 			return -1;
 		}
 	//	cout<<primitive->NUM<<' ';
 		if(primitive->type < 0 || primitive->type >4 )
-		{	MessageBox(NULL,"primitive->type < 0 || primitive->type >3","primitive->type < 0 || primitive->type >3",MB_OK);
+		{	//MessageBox(NULL,"primitive->type < 0 || primitive->type >3","primitive->type < 0 || primitive->type >3",MB_OK);
 			return -1;
 		}
 				

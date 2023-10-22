@@ -2,15 +2,15 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{9568ec7d-4267-4ebc-b469-7181ce090546}</UniqueIdentifier>
+      <UniqueIdentifier>{9bac6af8-c802-44ed-bc2f-d5a03592bc09}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{3a447f32-de4a-4594-98d9-c775d1893f1c}</UniqueIdentifier>
+      <UniqueIdentifier>{1016383e-019b-4986-a615-17fb390615c3}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl</Extensions>
     </Filter>
     <Filter Include="Resource Files">
-      <UniqueIdentifier>{60f6ce93-a117-44e5-8b10-a5b345eb1ac4}</UniqueIdentifier>
+      <UniqueIdentifier>{b74e07de-6c2b-4afd-bc0c-60e3dcd44ace}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
   </ItemGroup>
@@ -19,9 +19,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="m.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="impact.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,5 +1,11 @@
  
-#include "glut.h"
+ 
+
+#include "../source/GLUT.H"
+
+#pragma comment(lib,"../source/glut32.lib")
+
+
 #include <windows.h>
 #include <math.h>
 #include <stdio.h>
@@ -7,8 +13,19 @@
 #include <conio.h>
 #include <time.h>
 #include <vector>
+#include <sstream>
+#include <stringapiset.h>
+#include <shobjidl_core.h>
+#include <winbase.h>
+
 //#include<gl/glaux.h>
 //#include "tgalib.h"
+
+
+
+#include <shobjidl.h> 
+
+
 
 using namespace std;
 
@@ -20,13 +37,17 @@ int curDescI, curDescJ;
 #include "constants.h"
 #include "mygish.h"
 #include "enemy.h"
+
+GLfloat commonColor[] = { .5, .6, .5, 1 };
+
+
 #include "draw.h"
 #include "spisok.h"
 #include "scene.h"
 #include "levelManager.h"
 
-
-DESC desc[100][100];
+ 
+CELL desc[100][100];
 
 
 bool onlgt[2];
@@ -49,7 +70,9 @@ float YROT= 0;
 float XROT= 0;
 float ZROT= 0;
 bool cameraHeroOrientation = true;
-char command[100];
+
+string conssoleCommand;
+
 bool  playing=true;
 //PointF light[2];
 PointF MEDGISH;
@@ -122,6 +145,9 @@ char dat[101][101];
 GLfloat	real_lightmodel[4]={0.1,0.1,0.1,1};
 
 PointF forbombPoint;
+ 
+
+
 
 
 void GetQuadCoord(int *I,int *J, PointF heroPos)
@@ -144,7 +170,7 @@ bool underCameraUnit (PointF unit, PointF camera, int area)
 	int iii2,jjj2;
 	GetQuadCoord(&iii2,&jjj2, camera);
 
-	if(fabs(iii-iii2) < area && fabs(jjj-jjj2) < area)
+	if(abs(iii-iii2) < area && abs(jjj-jjj2) < area)
 		return true;
 
 	return false;
@@ -256,12 +282,12 @@ void Collisions()
 				gish.bui[i]->inWater = false;
 				gish.bui[i]->onHard = false;
 				int primi=-1;
-				DescCollision(gish.bui[i],&primi);
+			 	DescCollision(gish.bui[i],&primi);
 
 				if(primi >=0 && primi<MAXPRIMCOUNT)
 				  {
 
-
+					
 						gish.AdditionColliz(
 							&prim[primi],
 							NUM_TR,
@@ -505,13 +531,13 @@ void Collisions()
 
 
 
-			int k = 0;
+			int kk = 0;
 			Building* currBall;
-			for(pBall=ball.begin(); pBall!=ball.end(); pBall++, k++)
+			for(pBall=ball.begin(); pBall!=ball.end(); pBall++)
 			{
 
 		 
-				currBall = &ball.at(k);
+				currBall = &ball.at(kk);
 
 			 
 				 
@@ -544,6 +570,8 @@ void Collisions()
 					else 	Proch(pBall,	gish.bui[i],	6+pBall->radius);
 
 				}*/
+
+				 kk++;
 			}
 	
 }
@@ -552,6 +580,7 @@ void Collisions()
 
 void setDeath()
 {
+	return;
 
 	glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 0.9);
 	glEnable (GL_LIGHT1);
@@ -569,32 +598,57 @@ void setDeath()
 
 
 void setDay()
-{	glDisable (GL_LIGHT0);
+{	
+	
+	 
+ 
+
+///	pom
+ 
+ 
+
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+
+	GLfloat	diffuse[4] = { 1,1,1,1 };
+
+	
+
+	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+
+	glClearColor(commonColor[0], commonColor[1], commonColor[2], commonColor[3]);
+
+	real_lightmodel[0] = 0.1;
+	real_lightmodel[1] = 0.1;
+	real_lightmodel[2] = 0.1;
+	real_lightmodel[3] = 1;
+		glLightModelfv(GL_LIGHT_MODEL_AMBIENT,real_lightmodel);
+
+	 
+	 
+	glEnable(GL_FOG);
+	
+
+	glFogf(GL_FOG_MODE, GL_LINEAR); glFogf(GL_FOG_START, (float)DISTANCETOSCENE*0.6); glFogf(GL_FOG_END, DISTANCETOSCENE*3 );
+	//glFogf(GL_FOG_MODE, GL_EXP2); 	glFogf(GL_FOG_DENSITY, 0.0003f);
 
 
-	glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 0.9);
-	glEnable (GL_LIGHT1);
-	glDisable (GL_LIGHT2);
-	real_lightmodel[0]=0.1;
-	real_lightmodel[1]=0.1;
-	real_lightmodel[2]=0.1;
-	real_lightmodel[3]=1;
-	glClearColor(0.95,1,1,1);
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT,real_lightmodel);
-	GLfloat	diffuse[4]={1,1,1,1};
-	glLightfv(GL_LIGHT1,GL_DIFFUSE,diffuse);
-
+	glFogfv(GL_FOG_COLOR, commonColor); 
+	glHint(GL_FOG_HINT, GL_NICEST);
 
 
 	GLfloat myLightPosition[] = {
-									0, 
-									10000, 
-									0, 
-									1
-								};
-	glLightfv(GL_LIGHT1, GL_POSITION, myLightPosition);	
-
+								500 + YROT * 20,
+								1500 + XROT * 10,
+								1000,
+								0
+	};
 	
+	 
+
+	glLightfv(GL_LIGHT0, GL_POSITION, myLightPosition);	 
+
 }
 
 void setLocalLight(int number,
@@ -602,10 +656,12 @@ void setLocalLight(int number,
 				   float difR, float difG, float difB,
 				   GLfloat k)
 {	
+
+	return;
 	
 	glDisable (GL_LIGHT0);
-	glLightf(GL_LIGHT0+number, GL_QUADRATIC_ATTENUATION, k);
-	glEnable (GL_LIGHT0+number);
+	glLightf(GL_LIGHT2+number, GL_QUADRATIC_ATTENUATION, k);
+	glEnable (GL_LIGHT2+number);
 
 	real_lightmodel[0]=0.02;
 	real_lightmodel[1]=0.02;
@@ -626,7 +682,7 @@ void setLocalLight(int number,
 	}
 	else{*/
 		GLfloat	diffuse[4]={difR,difG,difB,1};
-		glLightfv(GL_LIGHT0+number,GL_DIFFUSE,diffuse);
+		glLightfv(GL_LIGHT2+number,GL_DIFFUSE,diffuse);
 //	}
 
 	
@@ -638,7 +694,7 @@ void setLocalLight(int number,
 									1
 								};
 
-	glLightfv(GL_LIGHT0+number, GL_POSITION, myLightPosition);	
+	glLightfv(GL_LIGHT1+number, GL_POSITION, myLightPosition);	
 
 
 	
@@ -651,8 +707,9 @@ DWORD starttime3=timeGetTime(),time_3;
 DWORD tGT=timeGetTime ();
 
 
-void CreateLines(char *path);
+void LoadLevel(char *path);
 void MyMouseFunc();
+void OpenLevelDialogProcess();
 
 	   int deathPause = 0;
 void myIdle()
@@ -670,15 +727,15 @@ void myIdle()
    time_3 = tGT-starttime3;
  
 
-    if(time_3>1000/100)
-	   {
-	
-	//	 MyMouseFunc();
+   if (time_1 > 1000 / 100)
+   {
+	   starttime1 += time_1;
+   }
+   else return;
 
-  		glutPostRedisplay();			
-		starttime3+=time_3;
 
-	   }
+
+ 
 
 	if(pauseMode)
 		return;
@@ -708,7 +765,7 @@ void myIdle()
 
 
 
-   if ( time_2 > 1000/5)  
+  
    { starttime2 += time_2; 
 	
    /*   int numEnemyActual = n_enemy_actual.size();
@@ -727,12 +784,12 @@ void myIdle()
 		  gish.H = 0 ;
 		  deathPause++;
 		  setDeath();
-		  if(deathPause > 25) 
+		  if(deathPause > 15) 
 		  {	 //glClearColor(0,0,0,1);
 //		     setNight();
 			weapon[BOMB].health = gish.H = 100;	
 			PointF tmpP = respawnPoint;
-			CreateLines((char*)levelManager.getCurrentLevel().c_str());
+			LoadLevel((char*)levelManager.getCurrentLevel().c_str());
 			gish.SetPos(tmpP.x, tmpP.y);
 
 			deathPause=0;
@@ -741,8 +798,10 @@ void myIdle()
 	  }
 
 
-	  if(Dist(gish.medium(), exitLevel) < 50)
-		  CreateLines((char*)levelManager.nextLevel("mapscript.dat").c_str());
+	  if (Dist(gish.medium(), exitLevel) < 50) {
+		//LoadLevel((char*)levelManager.nextLevel("mapscript.dat").c_str());
+		  OpenLevelDialogProcess();
+	  }
 
 	  for(int d=0; door[d].corrected(); d++)
 		  for(int k=0; key[k].corrected(); k++)
@@ -751,8 +810,17 @@ void myIdle()
 					  && key[k].x - key[k].radius < door[d].boxMAX.x 
 					 &&key[k].y + key[k].radius > door[d].boxMIN.y 					  
 					  && key[k].y - key[k].radius < door[d].boxMAX.y  )
-				  {door[d].open();
-				   key[k].radius = 0;
+				  {
+
+					  if (!door->isOpen)
+					  {
+						  door[d].open();
+						  key[k].radius = 0;
+						  key[k].setPos(0, -10000);
+
+						  door[d].UpdateMediumPos();
+						  respawnPoint = door[d].medium()  + PointF(0, 30);
+					  }
 				  }
 	  
 
@@ -791,9 +859,9 @@ void myIdle()
 	  gish.oldH = gish.H;
 
 
-	  for(n=0; n< CHECKPOINT_COUNT; n++) 
-		if(Dist(gish.medium(), checkPoint[n]) < 70)
-		  respawnPoint =  checkPoint[n] ; 
+	//  for(n=0; n< CHECKPOINT_COUNT; n++) 
+	//	if(Dist(gish.medium(), checkPoint[n]) < 70)
+		//  respawnPoint =  checkPoint[n] ; 
   
 
 	  if(Dist(gish.medium(), weapon[BOMB]) <  105) 
@@ -1006,9 +1074,9 @@ void myIdle()
 	if(gish.SLOMO)
 		dtimer = 1000/10;
 */
-	if (time_1 > 1000/100)  
+	//if (time_1 > 1000/100)  
 	{
-		starttime1 += time_1; 
+	//	starttime1 += time_1; 
 		static float deltaOpen[4];
 		static int napr=1;
 		static int  TT = 0;
@@ -1028,7 +1096,7 @@ int k;
 	  {
 		  int k=0;
 
-		  for(int i=curDescI; k<4; i++, k++ )
+		  for(int i=curDescI; k<6; i++, k++ )
 		  {
 			  if(i>=0 && i<100)
 				researched[i][curDescJ] = true;
@@ -1038,7 +1106,7 @@ int k;
 		  }
 		  k=0;
 
-		  for(int i=curDescI, k=0; k<4; i--, k++ )
+		  for(int i=curDescI, k=0; k<6; i--, k++ )
 		  {
 			  if(i>=0 && i<100)
 				researched[i][curDescJ] = true;
@@ -1050,7 +1118,7 @@ int k;
 		
 		  k=0;
 
-		  for(int j=curDescJ; k<4; j++, k++ )
+		  for(int j=curDescJ; k<6; j++, k++ )
 		  {
 			  if(j>=0 && j<100)
 				researched[curDescI][j] = true;
@@ -1061,7 +1129,7 @@ int k;
 		  k=0;
 
 
-		  for(int j=curDescJ; k<4; j--, k++ )
+		  for(int j=curDescJ; k<6; j--, k++ )
 		  {
 			  if(j>=0 && j<100)
 				researched[curDescI][j] = true;
@@ -1070,8 +1138,8 @@ int k;
 			  else 	 	  break;
 		  }
 	
-		  for(int i=curDescI-1; i<curDescI+2; i++)
-		  for(int j=curDescJ-1; j<curDescJ+2; j++)
+		  for(int i=curDescI-3; i<curDescI+5; i++)
+		  for(int j=curDescJ-3; j<curDescJ+5; j++)
 		  {	 
 			  
 			  if( dat[i][j] != '0' )
@@ -1327,6 +1395,13 @@ int k;
   
  
   }catch(int){}
+
+
+
+
+  glutPostRedisplay();
+
+ // Sleep(5);
 }
 
 
@@ -1337,12 +1412,10 @@ bool levelFreeSpace(char c)
 }
 
 
-void CreateLines(char *path)
+void LoadLevel(char *path)
 {
-
-
-
-
+	int srandCounter = 0;
+	
 
 			ball.clear();
 
@@ -1370,13 +1443,27 @@ void CreateLines(char *path)
 					lightColor[n][m][1] = 1-minirand()*0.5;
 					lightColor[n][m][2] = 1-minirand()*0.5;
 
-					researched[n][m] = false;
+					researched[n][m] = true; // false;
 
 				}
 
 
+			 
+
+
+
+
+
+
 			for(int i=0;i<10;i++)
 				weapon[i].set(i);
+
+
+
+			for (int k = 0; key[k].corrected(); k++)
+				key[k].setSpirit(false);
+					
+			 
 
 
 			for(int i=0; i< enemyCount; i++)
@@ -1444,7 +1531,7 @@ void CreateLines(char *path)
 
 				for(int j=0; j<100; j++)
 				{	for(int i=0; i<100; i++)
-					{
+					{ 
 						dat[i][j] =  getc(fp);
 					}
 					getc(fp);
@@ -1464,6 +1551,27 @@ void CreateLines(char *path)
 				 keyCount = 0;
 				 itemCount = 0;
 				
+
+
+				 for (int j = 0; j < 100; j++)
+				 { 
+					 for (int i = 0; i < 100; i++)
+					 { 
+						 if (dat[i][j] != '0')
+						 {
+							 if (i > maxLevelI) maxLevelI = i;
+							 if (j > maxLevelJ) maxLevelJ = j;
+
+							 if (i < minLevelI) minLevelI = i;
+							 if (j < minLevelJ) minLevelJ = j;
+
+							 srandCounter++;
+
+						 } 
+					 }
+				 }
+
+
 				for(int j=0; j<100; j++)
 				{
 
@@ -1498,15 +1606,6 @@ void CreateLines(char *path)
 						PointF D0 = ToPointF(I*SIZE1 + SIZE1, limitY - J*SIZE2); 
 
 
-						if(c!='0')
-						{
-							if(I > maxLevelI) maxLevelI = I;
-							if(J > maxLevelJ) maxLevelJ = J;
-
-							if(I < minLevelI) minLevelI = I;
-							if(J < minLevelJ) minLevelJ = J;
-
-						}
 
 						if(c == '1' || c == 'I'  || c == 's' || c== 'F')
 						{
@@ -1535,6 +1634,8 @@ void CreateLines(char *path)
 								prim[num].set(SAND, C	,D	,A,WIDTH,true,num);
 								num++;
 							}
+
+							/*
 							else  	if(c=='F')
 							{
 							//	forbombPoint = A;
@@ -1547,7 +1648,7 @@ void CreateLines(char *path)
 								prim[num].set(FORBOMB, C	,D	,A,WIDTH,true,num);
 								num++;
 							}
-
+							*/
 
 							prim[num-2].setColor(redcol,greencol,bluecol,1,1); 
 							prim[num-1].setColor(redcol,greencol,bluecol,1,1);
@@ -1641,26 +1742,26 @@ void CreateLines(char *path)
 
 
 
-						if(c == '4')
-						{		
-							if(i>0 && dat[i-1][j]=='W') 
+						if (c == '4')
+						{	
+							if (i>0 && dat[i - 1][j] == 'W')
 							{
 								desc[i][j].num1 = num;
 								prim[num].set(HYDRO,A	,B	,D,WIDTH,false,num);		 
 								prim[num].setColor(0,0.7,0.7,.4);
 								num++;
-							} 
+							}
 						
-							prim[num].set(GEO, D,  B , C,WIDTH,false,num++);
+							prim[num].set(GEO, D,  B , C,WIDTH,false,num );
 							prim[num].setColor(redcol,greencol,bluecol,1,true);
 							desc[i][j].num2 = num;
-							num++;
+							num++; 
 
 
 						
 						}
 
-						if(c == '5')
+						if(c == '5'  )
 						{
 						
 						
@@ -1764,14 +1865,15 @@ void CreateLines(char *path)
 		
 						if(c == 'S')
 						{
-							startLevel.x = I*SIZE1+75;
-							startLevel.y = limitY - J*SIZE2+75;
+							startLevel.x = I*SIZE1 +75;
+							startLevel.y = (limitY - J * SIZE2) + 35;
 								respawnPoint = startLevel;
-							gish.SetPos(I*SIZE1+75,limitY - J*SIZE2+75);
 
-							item[itemCount].setPos(I*SIZE1+60, limitY - J*SIZE2+60);
-							item[itemCount].setType(HEALTH);
-							itemCount++;
+							gish.SetPos(startLevel.x, startLevel.y);
+
+							//item[itemCount].setPos(startLevel.x, startLevel.y);
+							//item[itemCount].setType(HEALTH);
+							//itemCount++;
 						}
 				
 	
@@ -1779,7 +1881,8 @@ void CreateLines(char *path)
 						if(c == 't' )
 						{
 							int enT = TURRET;
-							enemy[ienem++].set(enT,I*SIZE1+SIZE1/2, limitY - J*SIZE2+SIZE2/2);enemyCount++;
+							enemy[ienem++].set(enT,I*SIZE1+SIZE1/2, limitY - J*SIZE2+SIZE2/2);
+							enemyCount++;
 
 						//	int count = rand()%5;
 						//	if(enT != TURRET)
@@ -1787,12 +1890,12 @@ void CreateLines(char *path)
 						//			enemy[ienem++].set(enT,I*SIZE1+SIZE1/2, limitY - J*SIZE2+SIZE2/2);
 
 						}
-
+						/*
 						if (c == '@') 
 						{
 							weapon[BOMB].set(BOMB);
 							weapon[BOMB].setPos(I*SIZE1+SIZE1/2, limitY - J*SIZE2+SIZE2/2);
-						}
+						}*/
 
 
 						if (c == '!') 
@@ -1804,7 +1907,8 @@ void CreateLines(char *path)
 						if(c == 'e' )
 						{
 							int enT = rand()%_MAX_ENEMY_TYPE_;
-							enemy[ienem++].set(enT,I*SIZE1+SIZE1/2, limitY - J*SIZE2+SIZE2/2);enemyCount++;
+							enemy[ienem++].set(enT,I*SIZE1+SIZE1/2, limitY - J*SIZE2+SIZE2/2);
+							enemyCount++;
 		
 						}
 
@@ -1875,15 +1979,7 @@ void CreateLines(char *path)
 
 			
 
-	
-	for(int i=0;i<MAXWEAPONTYPES-1;i++)
-	{
-		if(i!=BOMB)
-			if(i!=DETONATOR)
-				weapon[i].setPos(
-					interrRand(minLevelI,maxLevelI)*SIZE1+60, 
-					(100-interrRand(minLevelJ,maxLevelJ))*SIZE2+60);
-	}
+	/////////
 
 
 
@@ -1896,16 +1992,30 @@ void CreateLines(char *path)
 							)*/
 
 					
-					{
+					
+						if(enemyCount > 0)
+						{
 							
-						
+							
+							for(int i=0;i<MAXWEAPONTYPES-1;i++)
+							{
+								if(i!=BOMB)
+									if(i!=DETONATOR)
+										weapon[i].setPos(
+											interrRand(minLevelI,maxLevelI)*SIZE1+60, 
+											(100-interrRand(minLevelJ,maxLevelJ))*SIZE2+60);
+							}
+	
+
+
+/*
 							for(int  icheck=0;icheck<CHECKPOINT_COUNT;icheck++)
 							{
 								checkPoint[icheck].setPos(
 									interrRand(minLevelI,maxLevelI+10)*SIZE1+60, 
 										(100-interrRand(minLevelJ,maxLevelJ+10))*SIZE2+60);
 							}
-					
+					*/
 						
 							for(int itemCount=0;itemCount<MAXITEMS;itemCount++)
 							{
@@ -1923,29 +2033,50 @@ void CreateLines(char *path)
 
 
 
- for(int g=0;g<20;g++)
- {
-	 ball.push_back(Building(weapon[SUPER_WEAPON].x+g,weapon[SUPER_WEAPON].y+10,10,g));
+				 for(int g=0;g<20;g++)
+				 {
+					 ball.push_back(Building(weapon[SUPER_WEAPON].x+g,weapon[SUPER_WEAPON].y+10,10,g));
 
-	 ball[g].setInertion(0.99);
+					 ball[g].setInertion(0.99);
  	  
-	//  if(g<12)ball[g].setMassive(-1);
-	//  else 
-		  ball[g].setMassive(0);
+					//  if(g<12)ball[g].setMassive(-1);
+					//  else 
+						  ball[g].setMassive(0);
 
-		ball[g].setFriction(false);
+						ball[g].setFriction(false);
 
-	  ball[g].cred = 0.1;
-	  ball[g].cgreen = 0;
-	  ball[g].cblue = 0;
+					  ball[g].cred = 0.1;
+					  ball[g].cgreen = 0;
+					  ball[g].cblue = 0;
 
 	
- }
- ball[19].setMassive(1);
+				 }
+				 ball[19].setMassive(1);
 
 
 
-playing = true;
+
+
+
+
+
+
+				 srand(srandCounter);
+
+			     commonColor[0] = 0.5 + minirand() * 0.3;
+				 commonColor[1] = 0.5 + minirand() * 0.3;
+				 commonColor[2] = 0.5 + minirand() * 0.3;
+
+
+
+
+
+
+			gish.H = 100;
+
+			noclipMode = false;
+
+			playing = true;
 }
 
 
@@ -1954,9 +2085,9 @@ void myInit()
 {
 	srand ((unsigned)time(NULL));
 
-	CreateLines((char*)levelManager.nextLevel("mapscript.dat").c_str());
+	//LoadLevel((char*)levelManager.nextLevel("mapscript.dat").c_str());
 
-	scene.font.CreateOpenGLFont("Verdana",12);
+	scene.font.CreateOpenGLFont("Verdana",22);
 	scene.fontBig.CreateOpenGLFont("Verdana",30);
 
 
@@ -1977,13 +2108,28 @@ void myInit()
 	glEnable(GL_NORMALIZE);	
 	glEnable(GL_SCISSOR_TEST);
 	ShowCursor(false);
+
+
 	
 }
 
 
 void myReshape(int width, int height)
 {
-//	 glViewport(0, 0, width, height);
+ 	 glViewport(0, 0, width, height);
+
+	 winW = width;  //GetSystemMetrics(SM_CXSCREEN);
+	 winH = height;   //GetSystemMetrics(SM_CYSCREEN);
+	 
+
+
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(viewAngle, (float)winW / (float)(winH), 5, ZFAR);
+	glMatrixMode(GL_MODELVIEW);
+	///glLoadIdentity();
+
 }
 
 
@@ -1993,15 +2139,118 @@ bool console_mode=false;
 
 
 
+void OpenLevelDialogProcess()
+{
+  
+
+	if (pauseMode)
+		return;
+
+	pauseMode = true;
+
+	bool currectLevelFile = false;
+
+
+	ShowCursor(true);
+	////////////////////////
+	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+		COINIT_DISABLE_OLE1DDE);
+	IFileOpenDialog* pFileOpen;
+
+	// Create the FileOpenDialog object.
+	hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
+		IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+
+	if (SUCCEEDED(hr))
+	{
+
+		TCHAR buffer[MAX_PATH];
+		GetCurrentDirectory(sizeof(buffer), buffer); 
+
+		 
+
+		const size_t lenn = strlen(buffer);
+		string tmpStr = buffer;
+		tmpStr.append("\\maps");
+
+		WCHAR unistring[255];
+		int result = MultiByteToWideChar(CP_OEMCP, 0, tmpStr.c_str(), -1, unistring, 255);
+
+		  
+	
+		IShellItem* pCurFolder = NULL;
+		hr = SHCreateItemFromParsingName(unistring, NULL, IID_PPV_ARGS(&pCurFolder));
+		if (SUCCEEDED(hr))
+		{
+			pFileOpen->SetFolder(pCurFolder);
+			pCurFolder->Release();
+		}
+		  
+
+		// Show the Open dialog box.
+		hr = pFileOpen->Show(NULL);
+
+
+
+		// Get the file name from the dialog box.
+		if (SUCCEEDED(hr))
+		{
+			IShellItem* pItem;
+			hr = pFileOpen->GetResult(&pItem);
+			if (SUCCEEDED(hr))
+			{
+				PWSTR pszFilePath;
+				hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+
+				// Display the file name to the user.
+				if (SUCCEEDED(hr))
+				{
+					// MessageBoxW(NULL, pszFilePath, L"File Path", MB_OK);  
+					 
+					char buffer[500]; 
+					// First arg is the pointer to destination char, second arg is
+					// the pointer to source wchar_t, last arg is the size of char buffer
+					wcstombs(buffer, pszFilePath, 500);
+					//	 cout << "(" << buffer <<")"; 
+					currectLevelFile = true;
+
+					if (currectLevelFile) {
+						LoadLevel((char*)buffer);
+						levelManager.numCurrentLevel--;
+						levelManager.currentLevel = buffer;
+					}
+
+					CoTaskMemFree(pszFilePath);
+				}
+				pItem->Release();
+			}
+		}
+
+
+		pFileOpen->Release();
+	}
+	CoUninitialize();
+	ShowCursor(false);
+	  
+
+	pauseMode = false;
+
+	//////////////////////// 
+
+}
+
 
 void myKeyboardDown(unsigned char key, int x, int y)
 {	
 	static int n=0;
-	if(key == 27)	
+	if(key == 27)	 //ESC
 	{
-		glDeleteLists(888,1);
-		exit(0);
-
+		///glDeleteLists(888,1);
+		///exit(0);
+		/// 
+		
+		OpenLevelDialogProcess();
+		 
 	}
 	
 	if(!console_mode)
@@ -2013,14 +2262,30 @@ void myKeyboardDown(unsigned char key, int x, int y)
 		if(key == 'w' || key == 'ö')	moveUP_2 = true;
 		if(key == 's' || key == 'û')	moveDOWN_2= true;
 
+		if (key == 'A' || key == 'Ô')	moveLEFT_2 = true;
+		if (key == 'D' || key == 'Â')	moveRIGHT_2 = true;
+		if (key == 'W' || key == 'Ö')	moveUP_2 = true;
+		if (key == 'S' || key == 'Û')	moveDOWN_2 = true;
 
-		if(key ==  'r' || key ==  'ê' ) 
+
+
+		if(key ==  'F' || key ==  'À' || key == 'f' || key == 'à')
 		{
-			cameraHeroOrientation = false;
+	////		cameraHeroOrientation = false;
 		/*	for(int i=0;i <enemyCount;i++)
 			{	enemy[i].setSpirit(true);
 				enemy[i].setType(FLY);
 			}*/
+
+
+				
+				PointF tmpP = respawnPoint;
+				//LoadLevel((char*)levelManager.getCurrentLevel().c_str());
+				gish.SetPos(tmpP.x, tmpP.y);
+				gish.H = 100;
+			
+
+		
 
 		}
 
@@ -2054,22 +2319,7 @@ void myKeyboardDown(unsigned char key, int x, int y)
 			//SLOMO_K = 5;
 
 
-/*		if(key == 'l')
-		{
 
-			static bool day = true;
-			day = !day;
-				
-			if(day)
-			{	setDay();
-			}
-			else
-			{
-//				setNight();
-			}
-
-
-		}*/
 
 
 	//	if(key >= 48 && key <=57) 
@@ -2086,6 +2336,7 @@ void myKeyboardDown(unsigned char key, int x, int y)
 */
 
 
+
 		if( key == 'm' )
 		{	/*glMatrixMode(GL_PROJECTION);	
 			glLoadIdentity();
@@ -2096,10 +2347,11 @@ void myKeyboardDown(unsigned char key, int x, int y)
 			DEBUG_MODE=true;*/
 		//	ORTHO = true;
 
-			isMap = !isMap;
 
-		
+		//	isMap = !isMap;
+
 		}
+
 	/*	else if(key ==  'p' || key == 'm')
 		{	glMatrixMode(GL_PROJECTION);	
 			glLoadIdentity();
@@ -2119,62 +2371,101 @@ void myKeyboardDown(unsigned char key, int x, int y)
 	else
 	{
 		if(key==13)
-				{command[n] = '\0';n=0; 
+		{
+			    
+				// conssoleCommand.clear();
 				 
-				 if(strstr(command,"maps"))
+				 /*
+				 if(strstr(conssoleCommand.c_str(), "maps"))
 				 {
-					CreateLines(command);
+					CreateLines((char*)conssoleCommand.c_str());
 					levelManager.numCurrentLevel--;
+					levelManager.currentLevel = conssoleCommand;
+				 }*/
+
+				 if(conssoleCommand == "open")
+				 { 
+					 OpenLevelDialogProcess();
 				 }
 
-				 if(strstr(command,"noclip"))
+				 if(conssoleCommand == "noclip")
 				 {
 						noclipMode = !noclipMode;
 				 }
 
 				 console_mode = false;
-				}
+				 pauseMode = false;
+
+		}
 		else if (key==8)
-		{
-			
-			if(n>0) n--;
-			for(int i=n;i<100;i++ )
-				command[i] = '\0';
+		{ 
+			conssoleCommand.clear();
+
 		}
 		else	
 		{
-			command[n] = key;
-			n++;
+			conssoleCommand += key; 
 		}
 
 	}
 
-	if(key == '`')
-	{console_mode = !console_mode;
-	 n=0;
-	 for(int i=0;i<strlen(command);i++)
-		 command[i]=0;
+	if(key == '`' || key == '~')
+	{ 
+		console_mode = !console_mode; 
+		conssoleCommand.clear(); 
+		pauseMode = console_mode;
 
 	}
 
 }
 
 
-void MyMouseFunc()
+void MyMouseFunc(int x, int y)
 {
 
 	POINT p;
-	GetCursorPos( &p );						
-	SetCursorPos( winW >> 1, winH >> 1 );
-	ZROT -= (((winH >> 1)  - p.y )*0.3);
+	GetCursorPos( &p );		
 
-	YROT += (((winW >> 1)  - p.x )*0.3);
 
-	if(ZROT > 360) ZROT = 0;
-	if(ZROT < 0)   ZROT = 360;
+	if (!pauseMode)
+	{
 
-	if(YROT > 360) YROT = 0;
-	if(YROT < 0)   YROT = 360;
+		int screen_pos_x = glutGet((GLenum)GLUT_WINDOW_X);
+		int screen_pos_y = glutGet((GLenum)GLUT_WINDOW_Y);
+
+		int x_centerViewportPosInScreen = screen_pos_x + (winW >> 1);
+		int y_centerViewportPosInScreen = screen_pos_y + (winH >> 1);
+
+
+		SetCursorPos(x_centerViewportPosInScreen, y_centerViewportPosInScreen);
+		//ZROT -= (((winH >> 1)  - p.y )*0.3);
+
+
+		YROT += ((x_centerViewportPosInScreen - p.x) * 0.1);
+		XROT += ((y_centerViewportPosInScreen - p.y) * 0.1);
+
+
+		/*
+		if(ZROT > 360) ZROT = 0;
+		if(ZROT < 0)   ZROT = 360;
+
+		if(YROT > 360) YROT = 0;
+		if(YROT < 0)   YROT = 360;*/
+
+
+		//YROT = -MousePosX(winW - winW / 2) * 0.08;
+	//	XROT = MousePosY(winH) * 0.1;
+
+
+	}
+
+
+	if (YROT > 50) YROT = 50;
+	if (YROT < -50)   YROT = -50;
+
+	if (XROT > 50) XROT = 50;
+	if (XROT < -50)   XROT = -50;
+
 
 
 }
@@ -2219,13 +2510,18 @@ void MouseButton(int key,int state,int x,int y)
 
 void myKeyboardUp(unsigned char key, int x, int y)
 {
-	if(key == 27) exit(0);
+	//if(key == 27) exit(0);
 	if(!console_mode)
 	{
 		if(key == 'a' || key == 'ô')	moveLEFT_2 = false;
 		if(key == 'd' || key == 'â')	moveRIGHT_2 = false;
 		if(key == 'w' || key == 'ö')	moveUP_2 = false;
 		if(key == 's' || key == 'û')	moveDOWN_2= false;
+
+		if (key == 'A' || key == 'Ô')	moveLEFT_2 = false;
+		if (key == 'D' || key == 'Â')	moveRIGHT_2 = false;
+		if (key == 'W' || key == 'Ö')	moveUP_2 = false;
+		if (key == 'S' || key == 'Û')	moveDOWN_2 = false;
 
 		if(key ==  'l' || key ==  'z')	gish.LIP = false;
 		if(key ==  'k')	gish.SKOL = false;
@@ -2285,39 +2581,55 @@ int main(int argc, char* argv[])
 //	glutGameModeString("1024x768:32"); 
 
 
-	int screenW = winW = glutGet(GLUT_SCREEN_WIDTH);//GetSystemMetrics(SM_CXSCREEN);
-	int screenH = winH = glutGet(GLUT_SCREEN_HEIGHT);//GetSystemMetrics(SM_CYSCREEN);
+	int screenW = winW = glutGet(GLUT_SCREEN_WIDTH);  //GetSystemMetrics(SM_CXSCREEN);
+	int screenH = winH = glutGet(GLUT_SCREEN_HEIGHT) - 80;   //GetSystemMetrics(SM_CYSCREEN);
 
  //   winW -= 8;
   //  winH -= 100;	
 	
-	if(argc == 1)
-		glutEnterGameMode();
-	else {
 
-		glutInitWindowSize(winW, winH);	
-		glutInitWindowPosition(screenW/2-winW/2, 0);
-		glutCreateWindow("Game.  Demo from Useinov Evgeni");
+	bool windowMode = true; // argc > 1;
+
+	if (windowMode) {
+		glutInitWindowSize(winW, winH);
+		glutInitWindowPosition(screenW / 2 - winW / 2, 0);
+		glutCreateWindow("Game.  by Evgeny (---pulsar---)");
+	}
+	else { 
+		glutEnterGameMode();
+		
 	}
 
 
 //	glutEnterGameMode();//////////////////////////
 
 //	glutFullScreen();
-	glutDisplayFunc(myDisplay);
+
+
 	glutReshapeFunc(myReshape);
 	glutKeyboardFunc(myKeyboardDown);
 	glutKeyboardUpFunc(myKeyboardUp);
 
 	glutSpecialFunc(mySpecDown);
 	glutSpecialUpFunc(mySpecUp);
-	glutMouseFunc			(MouseButton);	myInit();
+	glutMouseFunc(MouseButton);	
+	glutPassiveMotionFunc(MyMouseFunc);
+	glutMotionFunc(MyMouseFunc);
+
+	
+	myInit();
 //	glutTimerFunc(3000, timer, 1);
+
+
+
+	OpenLevelDialogProcess();
+
+
 	glutIdleFunc(myIdle);
+	//glutDisplayFunc(displayFunc); 
+glutDisplayFunc(myDisplay); 
 
-
-	setDay();
-
+ 	 
 
 	//if(minirand()>0.5)setDay();
 	//else 
@@ -2335,6 +2647,8 @@ int main(int argc, char* argv[])
                                 wsprintf( szName, "%8.8X", dwLangID );
     hKbLayout = LoadKeyboardLayout( szName, KLF_REPLACELANG );
 	
+
+
 	
 	glutMainLoop();	
 
@@ -2385,40 +2699,136 @@ void ShowUnits()
 
 		
 			
-			int ENEMY_ACTUAL_COUNT = n_enemy_actual.size();
-			for(int n = 0; n < ENEMY_ACTUAL_COUNT; n++)
-			{ //  if(	enemy[n_enemy_actual[n]].health>0)
+		int ENEMY_ACTUAL_COUNT = n_enemy_actual.size();
+		for(int n = 0; n < ENEMY_ACTUAL_COUNT; n++)
+		{ //  if(	enemy[n_enemy_actual[n]].health>0)
 				
-				pum
-				if(underCameraUnit (enemy[n_enemy_actual[n]],  camera,12) && researchedUnit(enemy[n_enemy_actual[n]]))
-						ShowEnemy(&enemy[n_enemy_actual[n]]);
-				pom
-
-				ShowEnemyImpacts(&enemy[n_enemy_actual[n]]);
-			}
-		
 			pum
-			for(int i = 0; i<keyCount; i++)
-			{  
-				ShowKey(&key[i]);
-			}
-			pom	
+			if(underCameraUnit (enemy[n_enemy_actual[n]],  camera,12) && researchedUnit(enemy[n_enemy_actual[n]]))
+					ShowEnemy(&enemy[n_enemy_actual[n]]);
+			pom
+
+			ShowEnemyImpacts(&enemy[n_enemy_actual[n]]);
+		}
+		
+		pum
+		for(int i = 0; i<keyCount; i++)
+		{  
+			ShowKey(&key[i]);
+		}
+		pom	
 }
 
 
 
+void ShowBackgroundField(PointF cameraPos, int area)
+{
+	int iii, jjj;
+	GetQuadCoord(&iii, &jjj, cameraPos);
+
+	int z = -prim[0].Width * 10;
+
+	glBegin(GL_TRIANGLES);
+
+	blon
+
+	glColor4f(1,1,1,0.7);
+//	glColor3f(.5, 1,.5);
+
+	 for(int n = iii-area; n<=iii+area; n++)
+	  for(int m = jjj-area; m<=jjj+area; m++)
+	  {
+	//	  if(n >=0 && m>=0 && n<100 && m<100)
+		  {
+		//	  if(prim[desc[n][m].num1].type != HYDRO)
+
+		//	  if(!researched[n][m])
+
+			  {
+
+
+				  PointF a = ToPointF(n*SIZE1,(100-m)*SIZE2) ;
+				  PointF b = ToPointF(n*SIZE1+SIZE1,(100-m)*SIZE2);
+				  PointF c = ToPointF(n*SIZE1,(100-m)*SIZE2+SIZE2);
+				  PointF d = ToPointF(n*SIZE1+SIZE1,(100-m)*SIZE2+SIZE2);
+
+
+				tr2(a.x,a.y, z,
+					b.x,b.y, z,
+					c.x,c.y, z);
+
+				tr2(b.x,b.y, z,
+					d.x,d.y, z,
+					c.x,c.y, z);
+
+				float bmx = 	(a.x + d.x)*0.5;
+				float bmy = 	(a.y + d.y)*0.5;
+
+
+				tr2(b.x,b.y,z,
+					bmx,bmy,z+10,
+					a.x,a.y,z);
+
+				tr2(
+					c.x,c.y,z,
+					bmx,bmy,z+10,
+					d.x,d.y,z);
+
+
+			  }
+
+		  }
+
+	  }
+
+	 bloff
+	glEnd();
+
+
+
+}
+
+
 void displayByCamera(PointF cameraPos, int interval, int area)
 {
+	 
+	//	if(key == 'l')
+//	{
+
+	//	static bool day = true;
+	//	day = !day;
+
+	//	if(day)
+	//	{	
+
+	//	}
+	//	else
+	//	{
+	//		//setNight();
+	//	}
+
+
+	//}
 
 	glLoadIdentity (); 
 
 	pum;
-
-	YROT = -MousePosX(winW)*0.08;
+	 
+	/*
+	YROT = -MousePosX(winW - winW/2)*0.08;
 	XROT = MousePosY(winH)*0.1;
 
 
 
+	if (YROT > 50) YROT = 50;
+	if (YROT < -50)   YROT = -50; 
+
+	if (XROT > 50) XROT = 50;
+	if (XROT < -50)   XROT = -50;
+	*/
+
+
+	
 	glTranslatef(0,0 ,-(DISTANCETOSCENE - (DISTANCETOSCENE/3)));
 		if(interval==0){
 			glRotatef(-XROT+5,1,0,0);	
@@ -2426,6 +2836,8 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 		}
 	glTranslatef(0,0 ,-(DISTANCETOSCENE/3));
 	
+
+
 
 	if(isMap)
 			glScalef(0.3,0.3,0.3);
@@ -2438,10 +2850,12 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 	glTranslatef(-cameraPos.x ,-cameraPos.y ,0);
 
 
+	setDay();
+	
 
+	///for(int nl=0; nl<6;nl ++)
+	//	glDisable(GL_LIGHT2+nl);
 
-	for(int nl=0; nl<8;nl ++)
-		glDisable(GL_LIGHT0+nl);
 
 //	loff 
 
@@ -2490,48 +2904,37 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 	if(!weapon[BOMB].active)
 	  for(int n = curDescI-inerv; n<=curDescI+inerv; n++)
 	  for(int m = curDescJ-inerv; m<=curDescJ+inerv; m++)
-	  {
+	  { 
+			//	if(n > 0 && m > 0 && n < 100 && m < 100 ) {}
+			//	else continue; 
 			  
-		//	if(n > 0 && m > 0 && n < 100 && m < 100 ) {}
-		//	else continue;
-			
-			  
-			    if(lightNumber<7)
-				{
-					 
+			if(lightNumber<7)
+			{ 	
+				if(((n%inerv) == 0 && (m%inerv) == 0 ) )
+				{	 
+					setLocalLight(lightNumber, n*SIZE1,(100-m)*SIZE2,200,
+										lightColor[n][m][0],lightColor[n][m][1],lightColor[n][m][2], 0.000001); 
 
-					
-						if(((n%inerv) == 0 && (m%inerv) == 0 ) )
-						{	
-						
-			
-							setLocalLight(lightNumber, n*SIZE1,(100-m)*SIZE2,200,
-												lightColor[n][m][0],lightColor[n][m][1],lightColor[n][m][2], 0.000001);
-						
-
-							 pum
-								glTranslatef(n*SIZE1,(100-m)*SIZE2,10);loff	
-							 glColor3f(1,1,1
-								// (lightColor[n][m][0]*0.5 + 0.5),
-								// (lightColor[n][m][1]*0.5 + 0.5), 
-								// (lightColor[n][m][2]*0.5 + 0.5)
-									);
-								glutSolidSphere(10,8,8);lon
-							 pom
+					pum
+					glTranslatef(n*SIZE1,(100-m)*SIZE2,10);loff	
+					glColor3f(1,1,1
+					// (lightColor[n][m][0]*0.5 + 0.5),
+					// (lightColor[n][m][1]*0.5 + 0.5), 
+					// (lightColor[n][m][2]*0.5 + 0.5)
+						);
+					glutSolidSphere(10,8,8);lon
+					pom
 								 
-							lightNumber++;
+					lightNumber++;
 						
 					
-						}
+				} 
 
-					
-		
-
-				}	else break;
-
-			  
+			}	else break; 
 		  }
 	lon
+
+
 
 	if(playing)
 	{
@@ -2539,8 +2942,8 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 		int n;
 
 
-			crossX = gish.medium().x + MousePosX(winW)/2;
-			crossY = gish.medium().y + MousePosY(winH)/2;
+			crossX = gish.medium().x - YROT;
+			crossY = gish.medium().y + XROT;
 			pum
 				loff
 				doff
@@ -2581,13 +2984,14 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 
 				blon
 			ShowUnits();
+
 			if(interval == 0)
 			{
-			pum
+		/*	pum
 				glTranslatef(0,0,-prim[0].Width*2);
 			//	glScalef(1,1,-1);
 				ShowUnits();
-			pom
+			pom*/
 			}
 
 
@@ -2595,8 +2999,9 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 			pum
 
 
+				
 				glBegin(GL_TRIANGLES);
-		
+			 
 
 				 for(int n = iii-area; n<=iii+area; n++)
 				  for(int m = jjj-area; m<=jjj+area; m++)
@@ -2610,92 +3015,57 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 							ShowPrimitive(&prim[desc[n][m].num2]);	
 					  }
 
-				  }
-
-
-
-				 for(int n = iii-area; n<=iii+area; n++)
-				  for(int m = jjj-area; m<=jjj+area; m++)
-				  {  
-					  if(n >=0 && m>=0 && n<100 && m<100)
-					  {
-						  if(prim[desc[n][m].num1].type != GEO && prim[desc[n][m].num1].typeOfImpact == EVIL)
-							ShowPrimitive(&prim[desc[n][m].num1]);
-						 if(prim[desc[n][m].num2].type != GEO && prim[desc[n][m].num2].typeOfImpact == EVIL)
-							ShowPrimitive(&prim[desc[n][m].num2]);	
-					  }
-
-				  }
-
-
-				 for(int n = iii-area; n<=iii+area; n++)
-				  for(int m = jjj-area; m<=jjj+area; m++)
-				  {  
-					  if(n >=0 && m>=0 && n<100 && m<100)
-					  {  if( prim[desc[n][m].num1].type == FORBOMB) continue;
-						  if(prim[desc[n][m].num1].type != GEO && prim[desc[n][m].num1].typeOfImpact == GOOD)
-							ShowPrimitive(&prim[desc[n][m].num1]);
-						 if(prim[desc[n][m].num2].type != GEO && prim[desc[n][m].num2].typeOfImpact == GOOD)
-							ShowPrimitive(&prim[desc[n][m].num2]);	
-					  }
-
-				  }			
+				  } 
 
 				glEnd();
 				
-				blon
-			 glBegin(GL_TRIANGLES);
-			
-		 		glColor4f(.2,.2,.2,0.7);
-			//	glColor3f(.5, 1,.5);
-				int z = - prim[0].Width;
-				 for(int n = iii-area; n<=iii+area; n++)
-				  for(int m = jjj-area; m<=jjj+area; m++)
-				  {  
-				//	  if(n >=0 && m>=0 && n<100 && m<100)
-					  {
-					//	  if(prim[desc[n][m].num1].type != HYDRO)
-						
-					//	  if(!researched[n][m]) 
-
-						  {
-					
-								
-							  PointF a = ToPointF(n*SIZE1,(100-m)*SIZE2);
-							  PointF b = ToPointF(n*SIZE1+SIZE1,(100-m)*SIZE2);
-							  PointF c = ToPointF(n*SIZE1,(100-m)*SIZE2+SIZE2); 
-							  PointF d = ToPointF(n*SIZE1+SIZE1,(100-m)*SIZE2+SIZE2);  
-						
-						
-							tr2(a.x,a.y, z,   
-								b.x,b.y, z,		 
-								c.x,c.y, z);
-
-							tr2(b.x,b.y, z,
-								d.x,d.y, z,   	 
-								c.x,c.y, z);
-
-							float bmx = 	(a.x + d.x)*0.5;
-							float bmy = 	(a.y + d.y)*0.5;
-
-				
-							tr2(b.x,b.y,z,  
-								bmx,bmy,z+10,  
-								a.x,a.y,z);
-
-							tr2(
-								c.x,c.y,z,
-								bmx,bmy,z+10,  
-								d.x,d.y,z);
+	
+				 
+				 
+				//ShowBackgroundField(cameraPos, area);
+				ShowField();
 
 
-						  }
+				//SUPER WEAPON SHOW balls
+				//doff 
+				for (pBall = ball.begin(); pBall != ball.end(); pBall++)
+				{
+					pBall->Show(0, 0);
+				}
+				//	don
 
-					  }
 
-				  }
-				  
-				  bloff
+
+				glBegin(GL_TRIANGLES);
+				//LAVA AND ...
+				for (int n = iii - area; n <= iii + area; n++)
+					for (int m = jjj - area; m <= jjj + area; m++)
+					{
+						if (n >= 0 && m >= 0 && n < 100 && m < 100)
+						{
+							if (prim[desc[n][m].num1].type != GEO && prim[desc[n][m].num1].typeOfImpact == EVIL)
+								ShowPrimitive(&prim[desc[n][m].num1]);
+							if (prim[desc[n][m].num2].type != GEO && prim[desc[n][m].num2].typeOfImpact == EVIL)
+								ShowPrimitive(&prim[desc[n][m].num2]);
+						}
+
+					}
+
+
+				//WATER AND ICE
+				for (int n = iii - area; n <= iii + area; n++)
+					for (int m = jjj - area; m <= jjj + area; m++)
+					{
+						if (n >= 0 && m >= 0 && n < 100 && m < 100)
+						{
+							if (prim[desc[n][m].num1].type == FORBOMB) continue;
+							if (prim[desc[n][m].num1].type != GEO && prim[desc[n][m].num1].typeOfImpact == GOOD)
+								ShowPrimitive(&prim[desc[n][m].num1]);
+							if (prim[desc[n][m].num2].type != GEO && prim[desc[n][m].num2].typeOfImpact == GOOD)
+								ShowPrimitive(&prim[desc[n][m].num2]);
+						}
+
+					}
 				glEnd();
 
 
@@ -2707,7 +3077,7 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 				
 		 		 glColor4f(1,1,1,0.1);
 
-				 z =  prim[0].Width+1;
+				 int z =  prim[0].Width+1;
 				 for(int n = iii-area; n<=iii+area; n++)
 				  for(int m = jjj-area; m<=jjj+area; m++)
 				  {  
@@ -2782,16 +3152,9 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 			pom
 
 
+
+
 				
-
-		//doff
-	
-		for(pBall=ball.begin(); pBall!=ball.end(); pBall++)
-		{
-				pBall->Show(0,0);
-		}
-	//	don
-
 
 
 		
@@ -2799,18 +3162,45 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 	}
 
 
-	
+	int consoleLineOffset = 50;
 	if(console_mode)
-		{
-		loff;
-		
-	//	blon;
-		
+	{
+		loff;  
+		glColor3f(0, 0.5, 1);
+		scene.font.glDrawText(winH, 10, consoleLineOffset, "Commands:");
+		consoleLineOffset += 30;
+		glColor3f(0, 0.3, 0.7);
+		scene.font.glDrawText(winH, 10, consoleLineOffset, "open");
+		scene.font.glDrawText(winH, 50, consoleLineOffset , "- open map (from \"maps\" folder)");
+		consoleLineOffset += 20;
 
-		 glColor3f(1,0,0);
-		 	scene.font.glDrawText(winH,10,500,"file> %s",command);
-		 lon;//	bloff;
-		}
+		scene.font.glDrawText(winH, 10, consoleLineOffset, "noclip");
+		scene.font.glDrawText(winH, 50, consoleLineOffset, "- fly as ghost");
+		consoleLineOffset += 40;
+
+
+		glColor3f(0, 1, 0);
+		scene.font.glDrawText(winH, 10, consoleLineOffset += 40, "command> %s", conssoleCommand.c_str());
+
+		lon; 
+	}
+	else 
+	{
+		loff;
+		 glColor3f(1, 0, 0);
+		 scene.font.glDrawText(winH, 10, consoleLineOffset, "~  console"); 
+
+		 glColor3f(0, 0.3, 0 );
+		 consoleLineOffset += 40;
+		 scene.font.glDrawText(winH, 10, consoleLineOffset, "Controls:");
+		 consoleLineOffset += 20;
+		 scene.font.glDrawText(winH, 10, consoleLineOffset, "Keyboard: AWSD  <^v>");
+		 consoleLineOffset += 20;
+		 scene.font.glDrawText(winH, 10, consoleLineOffset, "Mouse: leftB - fire, middleB - heavy, rightB - sticky");
+
+		lon;
+
+	}
 
 	pom
 
@@ -2852,8 +3242,15 @@ void myDisplay()
 //	if(tttt!=0)
 //	{
 	glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	displayByCamera(camHero,0,12); 
+
+
+displayByCamera(camHero,0,12); 
+
+
+
+ 
+
+
 
 
 //	}
@@ -2925,9 +3322,8 @@ void myDisplay()
 						
 						lon
 			
-			glColor3f(0,0,0);
-						
-						lon	
+	 	
+						 
 		pom	
 /**/
 
@@ -2939,13 +3335,14 @@ void myDisplay()
 			glColor3f(0,0.75,0);
 			glTranslatef(0,3.4,-10);
 			pum
+
 			glScalef(gish.H*0.01,0.05,0.1);
 			glutSolidCube(1);
 			pom	
 		}
 		else	
 		{
-			glColor3f(1,1,1); scene.fontBig.glDrawText(winH,150,300,"DEMO from Useinov Evgeni");
+			glColor3f(1,1,1); scene.fontBig.glDrawText(winH,150,300,"You died!");
 		}
 			pum
 			glScalef(1,0.01,0.01);
@@ -3015,7 +3412,7 @@ void myDisplay()
 		glutSwapBuffers();
 
 
-//	glFlush();
+	glFlush();
 //	glutSwapBuffers();	
 }
 

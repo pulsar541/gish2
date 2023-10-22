@@ -675,7 +675,9 @@ void ShowPrimitive(Primitive *primitive)
 		//	if((primitive->NUM%3) == 0)	glColor3f(0.8,0.8,0.8);	
 		//	else
 		//	if(primitive->type == GEO)
-				glColor3f(0.5,0.5,0.5);	
+				glColor3f(1 - commonColor[0], 
+						  1 - commonColor[1],
+						  1 - commonColor[2]);
 		//	else
 		//		glColor3f(1,1,1);	
 
@@ -710,10 +712,10 @@ void ShowPrimitive(Primitive *primitive)
 			//	if((primitive->NUM%8) != 0)
 				{
 				float a;
-			///	if((primitive->NUM%3) == 0)
-			///		a=1.1;
+			//	if((primitive->NUM%3) == 0)
+			 	a=1.1;
 			//	else 
-					a=0.9;
+			//		a=0.9;
 
 				tr2( mx,my,primitive->Width*a,   
 					primitive->B.x,primitive->B.y,primitive->Width, 
@@ -725,6 +727,7 @@ void ShowPrimitive(Primitive *primitive)
 					mx,my,primitive->Width*a);
 				
 		//	glColor3f(0,0,0);
+
 
 				tr2(primitive->A.x,primitive->A.y,primitive->Width,   
 					primitive->C.x,primitive->C.y,primitive->Width,		   
@@ -922,13 +925,41 @@ void ShowCheckPoint(PointF *checkPoint)
 
 void ShowExit(PointF *exitPoint)
 {
-	pum
+	static float rotx;
+	static float rotz;
+	
+	rotx += 1;
+	rotz += 2;
+
 		loff
-		glColor3f(0.2,0,0);
-		glTranslatef(exitPoint->x, exitPoint->y, 0);
-		glutSolidCube(120);
+			glColor3f(1,0,0.5);
+			pum
+				
+				glTranslatef(exitPoint->x, exitPoint->y, 0);
+				glRotatef(rotx, 1, 0 ,0);
+				glRotatef(rotz, 0, 0 ,1);
+				glutSolidTorus(2,  40, 16, 32);
+			pom
+
+			pum
+				 
+				glTranslatef(exitPoint->x, exitPoint->y, 0);
+				glRotatef(-rotx, 1, 0 ,1);
+				glRotatef(-rotz, 0, 0 ,1);
+				glutSolidTorus(2,  35, 16, 32);
+			pom
+
+			pum
+			 
+				glTranslatef(exitPoint->x, exitPoint->y, 0);
+				glRotatef(-rotz*0.8, 1, 0 ,0);
+				glRotatef(rotx*0.7, 0, 1 ,1);
+				glutSolidTorus(2,  30, 16, 32);
+			pom
+
+
 		lon
-	pom
+	
 
 }
 
@@ -1018,10 +1049,10 @@ void ShowWeaponWithImpacts(Weapon *weapon)
 					break;
 				case 3: 	glColor3f(0,.3,.3);
 					break;
-				case 4: 	glColor3f(0,0,1);
-					break;
-				case 5: 	glColor3f(.3,0,.3);
-					break;
+				//case 4: 	glColor3f(0,0,1);
+			//		break;
+				//case 5: 	glColor3f(.3,0,.3);
+				//	break;
 				case 6: 	glColor3f(.3,.5,.3);
 					break;			
 				case 7: 	glColor3f(.5	,.3,.5);
@@ -1164,6 +1195,22 @@ void ShowItem(Item *item)
 
 	pom
 }
+
+
+
+
+void displayFunc()
+{
+ 
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	
+	glutSwapBuffers();	
+
+	glFlush();
+
+}
+
 
 
 
