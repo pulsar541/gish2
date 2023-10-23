@@ -1,0 +1,51 @@
+﻿C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Microsoft\VC\v170\Microsoft.Cpp.Analysis.props(24,5): warning MSB4211: Свойству "MsvcAnalysisPluginPath" в первый раз присваивается значение, но оно уже было использовано в "C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Microsoft\VC\v170\Microsoft.CodeAnalysis.Extensions.props (33,5)".
+cl : командная строка  warning D9035: использование параметра "Gm" нежелательно, он будет удален в следующих выпусках
+  m.cpp
+  Note: including lib: glut32.lib
+E:\_PROGRAMMING\Gish2Static\source\gameobject.h(75,38): warning C4018: >=: несоответствие типов со знаком и без знака
+E:\_PROGRAMMING\Gish2Static\source\phys.h(121,8): warning C4101: c: неиспользованная локальная переменная
+E:\_PROGRAMMING\Gish2Static\source\draw.h(18,7): warning C4101: i: неиспользованная локальная переменная
+E:\_PROGRAMMING\Gish2Static\source\m.cpp(404,6): warning C4101: j: неиспользованная локальная переменная
+E:\_PROGRAMMING\Gish2Static\source\m.cpp(209,11): warning C4101: i: неиспользованная локальная переменная
+E:\_PROGRAMMING\Gish2Static\source\m.cpp(635,10): warning C4838: Преобразование из "int" в "GLfloat" требует сужающего преобразования.
+E:\_PROGRAMMING\Gish2Static\source\m.cpp(636,10): warning C4838: Преобразование из "int" в "GLfloat" требует сужающего преобразования.
+E:\_PROGRAMMING\Gish2Static\source\m.cpp(1019,5): warning C4101: k: неиспользованная локальная переменная
+E:\_PROGRAMMING\Gish2Static\source\m.cpp(1429,8): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+E:\_PROGRAMMING\Gish2Static\source\m.cpp(1435,8): warning C4101: j: неиспользованная локальная переменная
+E:\_PROGRAMMING\Gish2Static\source\m.cpp(2155,16): warning C4018: <: несоответствие типов со знаком и без знака
+E:\_PROGRAMMING\Gish2Static\source\m.cpp(2347,2): warning C4996: 'getch': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _getch. See online help for details.
+E:\_PROGRAMMING\Gish2Static\source\m.cpp(2539,7): warning C4101: n: неиспользованная локальная переменная
+  font.cpp
+E:\_PROGRAMMING\Gish2Static\source\font.cpp(59,20): warning C4244: аргумент: преобразование "int" в "GLfloat", возможна потеря данных
+E:\_PROGRAMMING\Gish2Static\source\font.cpp(59,17): warning C4244: аргумент: преобразование "int" в "GLfloat", возможна потеря данных
+E:\_PROGRAMMING\Gish2Static\source\font.cpp(78,2): warning C4996: 'vsprintf': This function or variable may be unsafe. Consider using vsprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+E:\_PROGRAMMING\Gish2Static\source\font.cpp(142,2): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  Создание кода...
+LINK : warning LNK4076: недопустимый файл инкрементного состояния ".\Debug\GISH2.ilk" (будет удален); неинкрементная компоновка
+font.obj : warning LNK4075: не учитывается "/EDITANDCONTINUE" из-за спецификации "/SAFESEH"
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+glut32.lib(glut32.dll) : error LNK2026: небезопасный модуль для образа SAFESEH.
+.\Debug\GISH2.exe : fatal error LNK1281: Не удается создать образ SAFESEH.

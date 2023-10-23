@@ -1,0 +1,2 @@
+D:\_PROGRAMMING\Gish2Static\source\Release\GISH2.exe
+E:\_PROGRAMMING\Gish2Static\source\Release\freegish.exe

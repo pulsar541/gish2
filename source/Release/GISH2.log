@@ -1,0 +1,16 @@
+﻿  m.cpp
+  Note: including lib: glut32.lib
+E:\_PROGRAMMING\Gish2Static\source\gameobject.h(75,38): warning C4018: >=: несоответствие типов со знаком и без знака
+E:\_PROGRAMMING\Gish2Static\source\phys.h(121,8): warning C4101: c: неиспользованная локальная переменная
+E:\_PROGRAMMING\Gish2Static\source\draw.h(18,7): warning C4101: i: неиспользованная локальная переменная
+E:\_PROGRAMMING\Gish2Static\source\m.cpp(430,6): warning C4101: j: неиспользованная локальная переменная
+E:\_PROGRAMMING\Gish2Static\source\m.cpp(235,11): warning C4101: i: неиспользованная локальная переменная
+E:\_PROGRAMMING\Gish2Static\source\m.cpp(691,10): warning C4838: Преобразование из "int" в "GLfloat" требует сужающего преобразования.
+E:\_PROGRAMMING\Gish2Static\source\m.cpp(692,10): warning C4838: Преобразование из "int" в "GLfloat" требует сужающего преобразования.
+E:\_PROGRAMMING\Gish2Static\source\m.cpp(1087,5): warning C4101: k: неиспользованная локальная переменная
+E:\_PROGRAMMING\Gish2Static\source\m.cpp(1516,8): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+E:\_PROGRAMMING\Gish2Static\source\m.cpp(1522,8): warning C4101: j: неиспользованная локальная переменная
+E:\_PROGRAMMING\Gish2Static\source\m.cpp(2213,6): warning C4996: 'wcstombs': This function or variable may be unsafe. Consider using wcstombs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+E:\_PROGRAMMING\Gish2Static\source\m.cpp(2661,2): warning C4996: 'getch': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _getch. See online help for details.
+E:\_PROGRAMMING\Gish2Static\source\m.cpp(2942,7): warning C4101: n: неиспользованная локальная переменная
+  GISH2.vcxproj -> E:\_PROGRAMMING\Gish2Static\source\Release\freegish.exe
