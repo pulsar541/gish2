@@ -70,10 +70,10 @@ class Pula: public Unit
 		if (!(ipr)->inBox(this))
 				return;
 
-			if((ipr)->PtInTriang(ToPointF(x,y)))
+			if((ipr)->PtInTriang(PointF(x,y)))
 			{	
-				int numNL = (ipr)->numNearLine(ToPointF(x,y));
-				for(int c=0; (ipr)->PtInTriang(ToPointF(x,y)) && c<500;c++)
+				int numNL = (ipr)->numNearLine(PointF(x,y));
+				for(int c=0; (ipr)->PtInTriang(PointF(x,y)) && c<500;c++)
 				{
 					x += (ipr)->GetLineNormal(numNL).X;
 					y += (ipr)->GetLineNormal(numNL).Y;

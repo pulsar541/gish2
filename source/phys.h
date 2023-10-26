@@ -117,28 +117,25 @@
 			if(u1->spirit || u2->spirit)
 				return ;
 
-			
-			int c;
-					for(int c=0;Dist(u1,u2)-(dist)>0 && c<K;c++)
-						{
+			 
+			for(int c=0;Dist(u1,u2)-(dist)>0 && c<K;c++)
+				{
 		
-									u1->y-= 0.01*(u1->y - u2->y);
-									u1->x-= 0.01*(u1->x - u2->x);
-									u2->y-= 0.01*(u2->y - u1->y);
-									u2->x-= 0.01*(u2->x - u1->x);	
-						}	
+							u1->y-= 0.01*(u1->y - u2->y);
+							u1->x-= 0.01*(u1->x - u2->x);
+							u2->y-= 0.01*(u2->y - u1->y);
+							u2->x-= 0.01*(u2->x - u1->x);	
+				}	
 				
 
-					for(int c=0;Dist(u1,u2)-(dist)<0 && c<K;c++)
-						{
+			for(int c=0;Dist(u1,u2)-(dist)<0 && c<K;c++)
+				{
 
-									u1->y+= 0.01*(u1->y - u2->y);
-									u1->x+= 0.01*(u1->x - u2->x);
-									u2->y+= 0.01*(u2->y - u1->y);
-									u2->x+= 0.01*(u2->x - u1->x);							
-						}
-					
-					
+							u1->y+= 0.01*(u1->y - u2->y);
+							u1->x+= 0.01*(u1->x - u2->x);
+							u2->y+= 0.01*(u2->y - u1->y);
+							u2->x+= 0.01*(u2->x - u1->x);							
+				} 
 									
 				
 		}
@@ -232,11 +229,11 @@
 
 		dd1 = distance (line->a,
 					        line->b,
-							ToPointF(b->x,b->y));
+							PointF(b->x,b->y));
 		
 		dd2 = distance (line->a,
 					         line->b,
-							 ToPointF(b->oldx,b->oldy));*/	
+							 PointF(b->oldx,b->oldy));*/	
 
 		
 	/*	if(SIGN(dd1)!= SIGN(dd2) 
@@ -293,15 +290,15 @@
 		
 				if(primitive->inBox(u)) 
 				{
-					numNL = primitive->numNearLine(ToPointF(u->x,u->y));
+					numNL = primitive->numNearLine(PointF(u->x,u->y));
 				//	u->onHard = false;
 					if(primitive->isHalfBox)
 					{
 					
 						PointF normal = primitive->line[numNL].KKK();
 
-						u->x += normal.x * 0.5 * SIGN(distance(primitive->line[numNL].a,primitive->line[numNL].b , ToPointF(u->x,u->y)));
-						u->y += normal.y * 0.5 * SIGN(distance(primitive->line[numNL].a,primitive->line[numNL].b , ToPointF(u->x,u->y)));
+						u->x += normal.x * 0.5 * SIGN(distance(primitive->line[numNL].a,primitive->line[numNL].b , PointF(u->x,u->y)));
+						u->y += normal.y * 0.5 * SIGN(distance(primitive->line[numNL].a,primitive->line[numNL].b , PointF(u->x,u->y)));
 					
 						if(primitive->type!=ICE)
 						{
@@ -317,11 +314,11 @@
 					}
 
 				//	u->onHard = false;
-					for(c=0; primitive->inBox(u) && pointInPrimitive(ToPointF(u->x,u->y ),primitive) ;)	
+					for(c=0; primitive->inBox(u) && primitive->pointInPrimitive(PointF(u->x,u->y )) ;)
 					{ 
 						
-						u->x += primitive->line[numNL].KKK().x * 0.5 * SIGN(distance(primitive->line[numNL].a,primitive->line[numNL].b , ToPointF(u->x,u->y)));
-						u->y += primitive->line[numNL].KKK().y * 0.5 * SIGN(distance(primitive->line[numNL].a,primitive->line[numNL].b , ToPointF(u->x,u->y)));
+						u->x += primitive->line[numNL].KKK().x * 0.5 * SIGN(distance(primitive->line[numNL].a,primitive->line[numNL].b , PointF(u->x,u->y)));
+						u->y += primitive->line[numNL].KKK().y * 0.5 * SIGN(distance(primitive->line[numNL].a,primitive->line[numNL].b , PointF(u->x,u->y)));
 					
 						if(primitive->type!=ICE)
 						{
@@ -357,7 +354,7 @@
 						Proch(u,&primitive->line[c].a,u->radius);
 						Proch(u,&primitive->line[c].b,u->radius);
 							
-						while(CircleIntersects(&u->x,&u->y,u->radius, 
+						while(trigonom::CircleIntersects(&u->x,&u->y,u->radius,
 							primitive->line[c].Length, 
 							primitive->line[c].a,
 							primitive->line[c].b))
@@ -393,7 +390,7 @@
 				break;
 			case SAND:
 				if( primitive->inBox(u))
-				{	if(pointInPrimitive(ToPointF(u->x,u->y ),primitive)	)
+				{	if(primitive->pointInPrimitive(PointF(u->x,u->y ))	)
 					{ 
 						u->dx = 0;
 						u->dy = 0;
@@ -413,7 +410,7 @@
 						break;
 					}
 
-					if( pointInPrimitive(ToPointF(u->x,u->y),primitive))
+					if(primitive->pointInPrimitive(PointF(u->x,u->y)))
 					{	 
 						u->inWater = true;
 						result = primitive->NUM;

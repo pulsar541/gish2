@@ -1,12 +1,45 @@
- 
- 
-
-#include "../source/GLUT.H"
-
-#pragma comment(lib,"../source/glut32.lib")
-
-
 #include <windows.h>
+#include "GLUT.H" 
+#pragma comment(lib,"glut32.lib")
+ 
+#include <string>
+#include <iostream>
+using namespace std;
+
+
+
+int winW = 1;
+int winH = 1;
+
+
+
+#include "constants.h" 
+#include "Physics.h"
+#include "MyGish.h"
+#include "enemy.h"
+#include "door.h"
+#include "key.h"
+#include "item.h"
+#include "scene.h"
+#include "levelManager.h"
+#include "cell.h"
+
+#include <shobjidl.h> 
+
+#include "draw.h"
+#include "trigonom.h"
+
+
+
+Physics phys;
+ 
+  
+
+
+
+
+
+/*
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,13 +50,8 @@
 #include <stringapiset.h>
 #include <shobjidl_core.h>
 #include <winbase.h>
+*/
 
-//#include<gl/glaux.h>
-//#include "tgalib.h"
-
-
-
-#include <shobjidl.h> 
 
 
 
@@ -32,20 +60,13 @@ using namespace std;
 float crossX ;
 float crossY ;
 int curDescI, curDescJ;
+ 
 
-#include "mystuctures.h"
-#include "constants.h"
-#include "mygish.h"
-#include "enemy.h"
+/*
 
-GLfloat commonColor[] = { .5, .6, .5, 1 };
-
-
-#include "draw.h"
-#include "spisok.h"
 #include "scene.h"
-#include "levelManager.h"
 
+*/
  
 CELL desc[100][100];
 
@@ -91,7 +112,9 @@ int LMX = 0;
 int BMY = limitY;
 int TMY = 0;
 
-MyGish gish;
+
+draw   gameRender;
+MyGish gish(&phys);
 
 Primitive		prim[MAXPRIMCOUNT];
 Enemy			enemy[MAXENEMYCOUNT];
@@ -105,15 +128,16 @@ int doorCount = 0;
 int keyCount = 0;
 int itemCount = 0;
 
-vector<Building>		ball;
+vector<Unit>		ball;
 
 
 vector<int> n_prim_graph_actual;
 vector<int> n_prim_actual;
 //vector<Primitive>		::iterator iter_prim;
-vector<Building>		::iterator pBall;
+vector<Unit>			::iterator pBall;
 vector<Enemy>			::iterator iter_enemy;	
 vector<int> n_enemy_actual;
+ 
 
 PointF Hero;
 PointF exitLevel;
@@ -148,7 +172,21 @@ PointF forbombPoint;
  
 
 
+float MousePosX(int winw)
+{
+	POINT p;
+	GetCursorPos(&p);
+	//	glutGet
+	return (p.x - (winw >> 1));
+}
 
+
+float MousePosY(int winh)
+{
+	POINT p;
+	GetCursorPos(&p);
+	return -(p.y - (winh >> 1));
+}
 
 void GetQuadCoord(int *I,int *J, PointF heroPos)
 {
@@ -191,6 +229,50 @@ bool researchedUnit (PointF unit)
 }
 
 
+
+void MyGishCollision(MyGish* mygish, Unit* unit)
+{
+
+	for (int i = 0; i < mygish->N; i++)
+	{
+
+		if (mygish->LIP && trigonom::Dist(mygish->bui[i], unit) <= unit->radius + mygish->bui[i]->radius)
+		{
+			if (unit->typeOfImpact == EVIL)
+				mygish->phys->SVIAZKA_UnitOne(mygish->bui[i], unit, unit->radius, 5000);
+			else
+			{
+				if ((i % 2) == 0)
+					mygish->phys->SVIAZKA(mygish->bui[i], unit, unit->radius, 5000);
+			}
+
+		}
+		else
+		{
+			if (unit->typeOfImpact == EVIL)
+				mygish->phys->ProchUnitOne(mygish->bui[i], unit, unit->radius);
+			else
+				mygish->phys->Proch(mygish->bui[i], unit, unit->radius);
+		}
+	}
+
+
+
+	/*	Building *unit2;
+	unit2 = new Building(mygish->medium().x, mygish->medium().y,1,0);
+
+	if(Dist(unit2,unit)<unit2->radius)
+	{//	Proch(	unit2, unit, 60 );
+	unit->y+=45;
+	unit->setDxDy(0,0);
+	unit->Move();
+	}
+
+	delete unit2;*/
+
+}
+
+
 void DescCollision(Unit *unit,  int *primIndex)
 {
 	
@@ -204,15 +286,15 @@ void DescCollision(Unit *unit,  int *primIndex)
 		if(n >=0 && m>=0 && n<100 && m<100)
 		{
 			
-			if((primi = Collision( unit,	&prim[desc[n][m].num1])) != -1)  {*primIndex = primi; }
-			if((primi = Collision( unit,	&prim[desc[n][m].num2])) != -1)  {*primIndex = primi; }
+			if((primi = phys.Collision( unit,	&prim[desc[n][m].num1])) != -1)  {*primIndex = primi; }
+			if((primi = phys.Collision( unit,	&prim[desc[n][m].num2])) != -1)  {*primIndex = primi; }
 		}
 	 }
 
 	for(int d=0;d<doorCount;d++)	
 	{
 		if(door[d].inBox(unit))
-			Collision( unit,	&door[d]);
+			phys.Collision( unit,	&door[d]);
 	}
 
 }
@@ -222,8 +304,8 @@ void SimpleCollision(Unit *unit)
 {
 	int iii,jjj;
 	GetQuadCoord(&iii,&jjj,	*unit);
-	Collision( unit,	&prim[desc[iii][jjj].num1]);
-	Collision( unit,	&prim[desc[iii][jjj].num2]);
+	phys.Collision( unit,	&prim[desc[iii][jjj].num1]);
+	phys.Collision( unit,	&prim[desc[iii][jjj].num2]);
 }
 
 void Collisions()
@@ -232,8 +314,7 @@ void Collisions()
 
 	//curDescI = gish.medium().x / SIZE1;
 	//curDescJ = 101-gish.medium().y / SIZE2;
-		   	int i;
-	
+		 
 		if(!noclipMode)
 		{
 
@@ -380,20 +461,20 @@ void Collisions()
 				
 					for(int d  = 0; d < 10; d++)
 					if(d!=k) 
-						Proch(&weapon[k],&weapon[d], weapon[d].radius + weapon[k].radius);
+						phys.Proch(&weapon[k],&weapon[d], weapon[d].radius + weapon[k].radius);
 				
 
 	
 					for(int d=0; door[d].corrected();d++)	
 					{
-						Proch(&weapon[k], &key[d], key[d].radius + weapon[k].radius);
+						phys.Proch(&weapon[k], &key[d], key[d].radius + weapon[k].radius);
 					}
 				
 				
 				//	int ENEMY_ACTUAL_COUNT = n_enemy_actual.size();
 					for(int j  = 0; j < ENEMY_ACTUAL_COUNT; j++)
 					{
-							Proch(&weapon[k],&enemy[n_enemy_actual[j]], enemy[n_enemy_actual[j]].radius + weapon[k].radius);
+						phys.Proch(&weapon[k],&enemy[n_enemy_actual[j]], enemy[n_enemy_actual[j]].radius + weapon[k].radius);
 					}
 				}
 
@@ -410,12 +491,12 @@ void Collisions()
 				{
 					int iii,jjj;
 					GetQuadCoord(&iii,&jjj,	weapon[k].impact[i]);	
-					Collision( &weapon[k].impact[i],	&prim[desc[iii][jjj].num1]);
-					Collision( &weapon[k].impact[i],	&prim[desc[iii][jjj].num2]);
+					phys.Collision( &weapon[k].impact[i],	&prim[desc[iii][jjj].num1]);
+					phys.Collision( &weapon[k].impact[i],	&prim[desc[iii][jjj].num2]);
 
 					for(int d=0; door[d].corrected();d++)	
 					{
-						Collision( &weapon[k].impact[i],	&door[d]);
+						phys.Collision( &weapon[k].impact[i],	&door[d]);
 					}
 
 
@@ -427,7 +508,7 @@ void Collisions()
 				}
 			}
 
- int j;
+ 
 						
 			
 				for(int  j  = 0; j < ENEMY_ACTUAL_COUNT; j++)
@@ -441,7 +522,7 @@ void Collisions()
 					{	if(n_enemy_actual[j]==n_enemy_actual[k]) continue;
 						Enemy *tmpEnemy2; 
 						tmpEnemy2 = &enemy[n_enemy_actual[k]];
-						Proch(	tmpEnemy2, tmpEnemy, tmpEnemy->radius + tmpEnemy2->radius);
+						phys.Proch(	tmpEnemy2, tmpEnemy, tmpEnemy->radius + tmpEnemy2->radius);
 					}
 					  
 				    MyGishCollision(&gish,tmpEnemy); /////!
@@ -478,7 +559,7 @@ void Collisions()
 							if(d!=j) 
 							{
 								if(enemy[n_enemy_actual[d]].health > 0)
-									PROCH(&tmpEnemy->impact[k],&enemy[n_enemy_actual[d]], enemy[n_enemy_actual[d]].radius,5000);
+									phys.PROCH(&tmpEnemy->impact[k],&enemy[n_enemy_actual[d]], enemy[n_enemy_actual[d]].radius,5000);
 							}
 						}
 						
@@ -504,7 +585,11 @@ void Collisions()
 
 	//		TROS ((Unit**)ball,0,ball.size()-1,12.4,2000);
 
-			TROS(&ball,20,5000);
+
+
+				phys.TROS(&ball,20,5000);
+				
+
 		//	SVIAZKA (&ball[0],&ball[ball.size()-1],12.4,2000);
 			
 		
@@ -532,7 +617,7 @@ void Collisions()
 
 
 			int kk = 0;
-			Building* currBall;
+			Unit* currBall;
 			for(pBall=ball.begin(); pBall!=ball.end(); pBall++)
 			{
 
@@ -548,7 +633,7 @@ void Collisions()
 					Enemy *tmpEnemy;  
 					tmpEnemy = &enemy[n_enemy_actual[j]];
 					if(tmpEnemy->health > 0)
-						Proch((Unit*)tmpEnemy, currBall, (currBall->radius + tmpEnemy->radius));
+						phys.Proch((Unit*)tmpEnemy, currBall, (currBall->radius + tmpEnemy->radius));
 
 				}
 
@@ -599,13 +684,9 @@ void setDeath()
 
 void setDay()
 {	
-	
 	 
- 
-
 ///	pom
- 
- 
+  
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
@@ -617,7 +698,11 @@ void setDay()
 	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
 
-	glClearColor(commonColor[0], commonColor[1], commonColor[2], commonColor[3]);
+	glClearColor(
+		gameRender.commonColor[0], 
+		gameRender.commonColor[1], 
+		gameRender.commonColor[2], 
+		1);
 
 	real_lightmodel[0] = 0.1;
 	real_lightmodel[1] = 0.1;
@@ -634,7 +719,7 @@ void setDay()
 	//glFogf(GL_FOG_MODE, GL_EXP2); 	glFogf(GL_FOG_DENSITY, 0.0003f);
 
 
-	glFogfv(GL_FOG_COLOR, commonColor); 
+	glFogfv(GL_FOG_COLOR, gameRender.commonColor);
 	glHint(GL_FOG_HINT, GL_NICEST);
 
 
@@ -652,7 +737,7 @@ void setDay()
 }
 
 void setLocalLight(int number,
-				   int x,int y,float z,
+				   float x, float y,float z,
 				   float difR, float difG, float difB,
 				   GLfloat k)
 {	
@@ -671,7 +756,7 @@ void setLocalLight(int number,
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT,real_lightmodel);
 
 //	int n,m;
-//	GetQuadCoord(&n,&m, ToPointF(x,y));
+//	GetQuadCoord(&n,&m, PointF(x,y));
 
 	int n = x/SIZE1;
 	int m = 101 - y/SIZE2;
@@ -711,7 +796,9 @@ void LoadLevel(char *path);
 void MyMouseFunc();
 void OpenLevelDialogProcess();
 
-	   int deathPause = 0;
+
+int deathPause = 0;
+
 void myIdle()
 { 
 
@@ -798,7 +885,7 @@ void myIdle()
 	  }
 
 
-	  if (Dist(gish.medium(), exitLevel) < 50) {
+	  if (trigonom::Dist(gish.medium(), exitLevel) < 50) {
 		//LoadLevel((char*)levelManager.nextLevel("mapscript.dat").c_str());
 		  OpenLevelDialogProcess();
 	  }
@@ -834,8 +921,8 @@ void myIdle()
 	  for (n = 0; n < enemyCount; n++)
 	  {	
 		  enemy[n].ACTUAL = 
-			  simple_rasst((PointF)enemy[n],gish.medium(),1500) 
-		   || simple_rasst((PointF)enemy[n],weapon[BOMB],1500);
+			  trigonom::simple_rasst((PointF)enemy[n],gish.medium(),1500)
+		   || trigonom::simple_rasst((PointF)enemy[n],weapon[BOMB],1500);
 
 
 		  if( enemy[n].ACTUAL)
@@ -864,7 +951,7 @@ void myIdle()
 		//  respawnPoint =  checkPoint[n] ; 
   
 
-	  if(Dist(gish.medium(), weapon[BOMB]) <  105) 
+	  if(trigonom::Dist(gish.medium(), weapon[BOMB]) <  105)
 	  {	 
 		 if(!weapon[BOMB].active )
 		 { for(int i=0;i<enemyCount; i++)
@@ -885,8 +972,8 @@ void myIdle()
 			for(int m=jjj-1; m<=jjj+1; m++)
 			{
 				if(prim[desc[n][m].num1].type == FORBOMB || prim[desc[n][m].num2].type == FORBOMB) {
-				   prim[desc[n][m].num1].setPos(ToPointF(0,0), ToPointF(0,1), ToPointF(1,1));
-				   prim[desc[n][m].num2].setPos(ToPointF(0,0), ToPointF(0,1), ToPointF(1,1));
+				   prim[desc[n][m].num1].setPos(PointF(0,0), PointF(0,1), PointF(1,1));
+				   prim[desc[n][m].num2].setPos(PointF(0,0), PointF(0,1), PointF(1,1));
 					weapon[DETONATOR].setPos(100000,10000);
 					weapon[DETONATOR].setMassive(false);
 					weapon[DETONATOR].active=false;
@@ -908,7 +995,7 @@ void myIdle()
 
 	  for(n=0; n< itemCount; n++)
 	  {
-		  if(Dist(gish.medium(), item[n]) < 70 )
+		  if(trigonom::Dist(gish.medium(), item[n]) < 70 )
 		  {
 		
 			
@@ -927,7 +1014,7 @@ void myIdle()
 	/*	if(gish.FIRE)
 		{
 			PointF A = gish.medium();
-			PointF B = ToPointF(gish.impact[0].x,gish.impact[0].y);
+			PointF B = PointF(gish.impact[0].x,gish.impact[0].y);
 
 
 			int ENEMY_ACTUAL_COUNT = n_enemy_actual.size();
@@ -975,22 +1062,22 @@ void myIdle()
 				Enemy *tmpEnemy;  
 				tmpEnemy = &enemy[n_enemy_actual[j]];
 
-				if(weapon[BOMB].active && Dist(&weapon[BOMB],tmpEnemy)<=tmpEnemy->radius+weapon[BOMB].radius+1)
+				if(weapon[BOMB].active && trigonom::Dist(&weapon[BOMB],tmpEnemy)<=tmpEnemy->radius+weapon[BOMB].radius+1)
 				{
-					weapon[BOMB].health-= minirand()*3;
+					weapon[BOMB].health-= trigonom::minirand()*3;
 				}
 
 				for(int i=0;i<gish.N;i++)	
 				{
 
-					if(Dist(gish.bui[i],tmpEnemy)<tmpEnemy->radius)
+					if(trigonom::Dist(gish.bui[i],tmpEnemy)<tmpEnemy->radius)
 					{
 					
-						gish.H -= minirand()*3;
+						gish.H -= trigonom::minirand()*3;
 
 					}
 					
-					if(gish.TVER && Dist(gish.bui[i],tmpEnemy)<tmpEnemy->radius+10)
+					if(gish.TVER && trigonom::Dist(gish.bui[i],tmpEnemy)<tmpEnemy->radius+10)
 					{
 						tmpEnemy->health -=2;
 					}
@@ -1010,17 +1097,17 @@ void myIdle()
 				
 				for(int k=0;k<10;k++)
 				{		for(int i=0;i<gish.N;i++)
-						if(Dist(&gish.medium(), &tmpEnemy->impact[k])<tmpEnemy->radius + 20)
+						if(trigonom::Dist(&gish.medium(), &tmpEnemy->impact[k])<tmpEnemy->radius + 20)
 						{
-						gish.H -= minirand()*10;
+						gish.H -= trigonom::minirand()*10;
 						tmpEnemy->impact[k].H=0;
 						tmpEnemy->impact[k].setPos(tmpEnemy->x,tmpEnemy->y );
 				//		tmpEnemy->impact[i].setDxDy(0, 0);
 						}
 
-					if(weapon[BOMB].active && Dist(&weapon[BOMB],&tmpEnemy->impact[k])<weapon[BOMB].radius)
+					if(weapon[BOMB].active && trigonom::Dist(&weapon[BOMB],&tmpEnemy->impact[k])<weapon[BOMB].radius)
 					{
-						weapon[BOMB].health-= minirand()*3;
+						weapon[BOMB].health-= trigonom::minirand()*3;
 						tmpEnemy->impact[k].H=0;
 						tmpEnemy->impact[k].setPos(tmpEnemy->x,tmpEnemy->y );
 					}
@@ -1084,7 +1171,7 @@ void myIdle()
 		if(TT++>300) {TT=0; napr=-napr;}
 
 		MEDGISH = gish.medium();
-int k;
+ 
 
 //		for(int k=0; k<10; k++)
 	//			weapon[k].setPos(0, 0);
@@ -1160,7 +1247,7 @@ int k;
 			for(int k=0;k<MAXWEAPONTYPES;k++)
  			if(k!=gish.currentWeapon && k!=BOMB
 				&& weapon[gish.currentWeapon].y > weapon[k].y 
-				&& Dist(&weapon[gish.currentWeapon],&weapon[k]) < weapon[k].radius*2.2 )
+				&& trigonom::Dist(&weapon[gish.currentWeapon],&weapon[k]) < weapon[k].radius*2.2 )
 			{	
 				weapon[gish.currentWeapon].setPos(gish.medium().x, gish.medium().y+70);
 				gish.currentWeapon = k;
@@ -1177,11 +1264,11 @@ int k;
 
 	  for(int  i=0;i<gish.N;i++)	
 	  {
-		  if(Dist(gish.bui[i], gish.bui[gish.soot(i)]) < 20  )
+		  if(trigonom::Dist(gish.bui[i], gish.bui[gish.soot(i)]) < 20  )
 			  gish.H -= 1;
 
 		 for(int k=0; key[k].corrected(); k++)
-			 if(Dist(gish.bui[i], &key[k]) < key[k].radius*1.1 )
+			 if(trigonom::Dist(gish.bui[i], &key[k]) < key[k].radius*1.1 )
 			 { key[k].setSpirit(true);
 			//	key[k].setMassive(false);
 			
@@ -1215,7 +1302,7 @@ int k;
 		//	iter_enemy->Move();
 		}
 	   
-		float dist = Dist(gish.medium(),ToPointF(crossX,crossY));
+		float dist = trigonom::Dist(gish.medium(),PointF(crossX,crossY));
 		float impactVectorX = ( crossX - gish.medium().x ) / dist;
 		float impactVectorY = ( crossY - gish.medium().y ) / dist;
 
@@ -1243,7 +1330,7 @@ int k;
 		}*/
 
  
-			Building* currBall;
+		Unit* currBall;
 	    
 		
 			 
@@ -1257,7 +1344,7 @@ int k;
 
 					Enemy *tmpEnemy;  
 					tmpEnemy = &enemy[n_enemy_actual[j]];
-					if(Dist(currBall,(Unit*)tmpEnemy)<tmpEnemy->radius+pBall->radius)
+					if(trigonom::Dist(currBall,(Unit*)tmpEnemy)<tmpEnemy->radius+pBall->radius)
 					{
 						tmpEnemy->health = 0;
 					}
@@ -1295,7 +1382,7 @@ int k;
 		
 								if(weapon[k].impact[i].H > 0 )
 								{
-									if(Dist(&weapon[k].impact[i],tmpEnemy)<tmpEnemy->radius)
+									if(trigonom::Dist(&weapon[k].impact[i],tmpEnemy)<tmpEnemy->radius)
 									{
 										tmpEnemy->health -= 25;
 										weapon[k].impact[i].H=0;
@@ -1303,8 +1390,8 @@ int k;
 								}
 
 							//	for(int i=0;i<10;i++)
-							//	if(Dist(ToPointF(gish.bui[i]->x,gish.bui[i]->y) ,
-							//			ToPointF(tmpEnemy->impact[i].x,tmpEnemy->impact[i].y)
+							//	if(Dist(PointF(gish.bui[i]->x,gish.bui[i]->y) ,
+							//			PointF(tmpEnemy->impact[i].x,tmpEnemy->impact[i].y)
 							//			)<gish.bui[i]->radius+35)
 							//	{
 							//		gish.H -= 0.1;
@@ -1328,11 +1415,11 @@ int k;
 						if(weapon[k].impact[i].x == 0)
 							continue;
 
-						PointF A = ToPointF(
+						PointF A(
 							weapon[k].impact[0].x, 
 							weapon[k].impact[0].y);
 
-						PointF B = ToPointF(
+						PointF B(
 							weapon[k].impact[i].x, 
 							weapon[k].impact[i].y);
 
@@ -1345,14 +1432,14 @@ int k;
 							//	if(enemy[n_enemy_actual[j]].health>0)
 								{
 
-									float curdist = Dist( (PointF)enemy[n_enemy_actual[j]], A) ;
+									float curdist = trigonom::Dist( (PointF)enemy[n_enemy_actual[j]], A) ;
 								
 									if(	 curdist < dist 
-										&& CircleIntersects(
+										&& trigonom::CircleIntersects(
 										&enemy[n_enemy_actual[j]].x, 
 										&enemy[n_enemy_actual[j]].y, 
 										enemy[n_enemy_actual[j]].radius, 
-										Dist(A, B), A, B))					
+											trigonom::Dist(A, B), A, B))
 										{	dist = curdist;
 											numnearEnemy = n_enemy_actual[j];
 										}
@@ -1422,26 +1509,22 @@ void LoadLevel(char *path)
 			NUM_TR = 0;
 			FILE *fp;
 						
-		/*	prim[num].set(ToPointF(-limitX/2,0),		 ToPointF(limitX+limitX/2,0),ToPointF(limitX/2,-4000), 120,num++);
-			prim[num].set(ToPointF(0,limitY),		 ToPointF(0,-limitY/2),		 ToPointF(-4000,limitY/2), 120,num++);
-			prim[num].set(ToPointF(limitX,-limitY/2), ToPointF(limitX,limitY),	 ToPointF(limitX+4000,limitY/2), 120,num++);
-		*/
 
 
-			colorGeo[0] = minirand();
-			colorGeo[1] = minirand();
-			colorGeo[2] = minirand();
+			colorGeo[0] = trigonom::minirand();
+			colorGeo[1] = trigonom::minirand();
+			colorGeo[2] = trigonom::minirand();
 
-			colorWalk[0] = 1-minirand()*0.5;
-			colorWalk[1] = 1-minirand()*0.5;
-			colorWalk[2] = 1-minirand()*0.5;	
+			colorWalk[0] = 1- trigonom::minirand()*0.5;
+			colorWalk[1] = 1- trigonom::minirand()*0.5;
+			colorWalk[2] = 1- trigonom::minirand()*0.5;
 
 			for(int n=0;n<100;n++)
 				for(int m=0;m<100; m++)
 				{
-					lightColor[n][m][0] = 1-minirand()*0.5;
-					lightColor[n][m][1] = 1-minirand()*0.5;
-					lightColor[n][m][2] = 1-minirand()*0.5;
+					lightColor[n][m][0] = 1- trigonom::minirand()*0.5;
+					lightColor[n][m][1] = 1- trigonom::minirand()*0.5;
+					lightColor[n][m][2] = 1- trigonom::minirand()*0.5;
 
 					researched[n][m] = true; // false;
 
@@ -1519,7 +1602,7 @@ void LoadLevel(char *path)
 		//	return;
 
 
-			int j;	
+			 
 			for(int j=0; j<100; j++)
 					for(int i=0; i<100; i++)
 						dat[i][j] = '1';
@@ -1591,19 +1674,19 @@ void LoadLevel(char *path)
 						char c = '0';
 						c= dat[i][j];
 
-						PointF A = ToPointF(I*SIZE1,		 limitY - J*SIZE2);
-						PointF B = ToPointF(I*SIZE1,		  limitY - J*SIZE2+SIZE2); 	
-						PointF C = ToPointF(I*SIZE1 + SIZE1, limitY - J*SIZE2+SIZE2);
-						PointF D = ToPointF(I*SIZE1 + SIZE1, limitY - J*SIZE2);
+						PointF A(I*SIZE1,		 limitY - J*SIZE2);
+						PointF B(I*SIZE1,		  limitY - J*SIZE2+SIZE2); 	
+						PointF C(I*SIZE1 + SIZE1, limitY - J*SIZE2+SIZE2);
+						PointF D(I*SIZE1 + SIZE1, limitY - J*SIZE2);
 						
 						PointF E;
 						E.x = (A.x + D.x) / 2; 
 						E.y = A.y-SIZE2/2;
 			 
-						PointF A0 = ToPointF(I*SIZE1,		 limitY - J*SIZE2);
-						PointF B0 = ToPointF(I*SIZE1,		  limitY - J*SIZE2+SIZE2); 	
-						PointF C0 = ToPointF(I*SIZE1 + SIZE1, limitY - J*SIZE2+SIZE2);
-						PointF D0 = ToPointF(I*SIZE1 + SIZE1, limitY - J*SIZE2); 
+						PointF A0(I*SIZE1,		 limitY - J*SIZE2);
+						PointF B0(I*SIZE1,		  limitY - J*SIZE2+SIZE2); 	
+						PointF C0(I*SIZE1 + SIZE1, limitY - J*SIZE2+SIZE2);
+						PointF D0(I*SIZE1 + SIZE1, limitY - J*SIZE2); 
 
 
 
@@ -1938,13 +2021,13 @@ void LoadLevel(char *path)
 						int y1 = rand () %(int)limitY;
 						int y2 = y1+100+rand ()%1000;
 
-						prim[num].set(GEO, ToPointF(MIN(x1,x2),limitY-y1),
-														 ToPointF(MAX(x1,x2),limitY-y1+rand()%150-75),
-														 ToPointF((x1+x2)/2+rand()%700-350,limitY-y2),
+						prim[num].set(GEO, PointF(MIN(x1,x2),limitY-y1),
+														 PointF(MAX(x1,x2),limitY-y1+rand()%150-75),
+														 PointF((x1+x2)/2+rand()%700-350,limitY-y2),
 														 120,false,num++);
-						prim[num].setColor(minirand(),
-												 minirand(),
-												 minirand(),1,true); 
+						prim[num].setColor(trigonom::minirand(),
+							trigonom::minirand(),
+							trigonom::minirand(),1,true);
 
 						
 				}
@@ -2002,8 +2085,8 @@ void LoadLevel(char *path)
 								if(i!=BOMB)
 									if(i!=DETONATOR)
 										weapon[i].setPos(
-											interrRand(minLevelI,maxLevelI)*SIZE1+60, 
-											(100-interrRand(minLevelJ,maxLevelJ))*SIZE2+60);
+											trigonom::interrRand(minLevelI,maxLevelI)*SIZE1+60,
+											(100- trigonom::interrRand(minLevelJ,maxLevelJ))*SIZE2+60);
 							}
 	
 
@@ -2021,8 +2104,8 @@ void LoadLevel(char *path)
 							{
 
 								item[itemCount].setPos(
-									interrRand(minLevelI,maxLevelI+10)*SIZE1+60, 
-										(100-interrRand(minLevelJ,maxLevelJ+10))*SIZE2+60);
+									trigonom::interrRand(minLevelI,maxLevelI+10)*SIZE1+60,
+										(100- trigonom::interrRand(minLevelJ,maxLevelJ+10))*SIZE2+60);
 
 								item[itemCount].setType(HEALTH);
 						
@@ -2035,7 +2118,7 @@ void LoadLevel(char *path)
 
 				 for(int g=0;g<20;g++)
 				 {
-					 ball.push_back(Building(weapon[SUPER_WEAPON].x+g,weapon[SUPER_WEAPON].y+10,10,g));
+					 ball.push_back(Unit(weapon[SUPER_WEAPON].x+g, weapon[SUPER_WEAPON].y+10, 10));
 
 					 ball[g].setInertion(0.99);
  	  
@@ -2063,9 +2146,9 @@ void LoadLevel(char *path)
 
 				 srand(srandCounter);
 
-			     commonColor[0] = 0.5 + minirand() * 0.3;
-				 commonColor[1] = 0.5 + minirand() * 0.3;
-				 commonColor[2] = 0.5 + minirand() * 0.3;
+				 gameRender.commonColor[0] = 0.5 + trigonom::minirand() * 0.3;
+				 gameRender.commonColor[1] = 0.5 + trigonom::minirand() * 0.3;
+				 gameRender.commonColor[2] = 0.5 + trigonom::minirand() * 0.3;
 
 
 
@@ -2109,7 +2192,7 @@ void myInit()
 	glEnable(GL_SCISSOR_TEST);
 	ShowCursor(false);
 
-
+	  
 	
 }
 
@@ -2363,8 +2446,7 @@ void myKeyboardDown(unsigned char key, int x, int y)
 		
 		}
 */
-		if(key == 'y') SH1 = !SH1;
-
+		 
 
 
 	}
@@ -2635,7 +2717,7 @@ glutDisplayFunc(myDisplay);
 	//else 
 //		setNight();
 
-	spisok();
+	gameRender.spisok();
 	
 
 
@@ -2674,27 +2756,27 @@ static float a = 0;
 void ShowUnits()
 {
 
-		ShowGish(&gish);
+		gameRender.ShowGish(&gish);
 	
 		for(int i=0;i<MAXWEAPONTYPES;i++)
 		{
 			if(underCameraUnit (weapon[i],  camera,12) && researchedUnit(weapon[i]))
-				ShowWeaponWithImpacts(&weapon[i]);
+				gameRender.ShowWeaponWithImpacts(&weapon[i]);
 		}
 
 		if(researchedUnit(exitLevel))
-			ShowExit(&exitLevel);
+			gameRender.ShowExit(&exitLevel);
 
 		for(int n=0;n<CHECKPOINT_COUNT; n++)
 		{
 			if(underCameraUnit (checkPoint[n],  camera,12) && researchedUnit(checkPoint[n]))
-				ShowCheckPoint(&checkPoint[n]);
+				gameRender.ShowCheckPoint(&checkPoint[n]);
 		}
 
 		for(int n=0;n<itemCount; n++)
 		{
 			if(underCameraUnit (item[n],  camera,12) && researchedUnit(item[n]))
-				ShowItem(&item[n]);
+				gameRender.ShowItem(&item[n]);
 		}
 
 		
@@ -2705,16 +2787,16 @@ void ShowUnits()
 				
 			pum
 			if(underCameraUnit (enemy[n_enemy_actual[n]],  camera,12) && researchedUnit(enemy[n_enemy_actual[n]]))
-					ShowEnemy(&enemy[n_enemy_actual[n]]);
+				gameRender.ShowEnemy(&enemy[n_enemy_actual[n]]);
 			pom
 
-			ShowEnemyImpacts(&enemy[n_enemy_actual[n]]);
+				gameRender.ShowEnemyImpacts(&enemy[n_enemy_actual[n]]);
 		}
 		
 		pum
 		for(int i = 0; i<keyCount; i++)
 		{  
-			ShowKey(&key[i]);
+			gameRender.ShowKey(&key[i]);
 		}
 		pom	
 }
@@ -2747,10 +2829,10 @@ void ShowBackgroundField(PointF cameraPos, int area)
 			  {
 
 
-				  PointF a = ToPointF(n*SIZE1,(100-m)*SIZE2) ;
-				  PointF b = ToPointF(n*SIZE1+SIZE1,(100-m)*SIZE2);
-				  PointF c = ToPointF(n*SIZE1,(100-m)*SIZE2+SIZE2);
-				  PointF d = ToPointF(n*SIZE1+SIZE1,(100-m)*SIZE2+SIZE2);
+				  PointF a = PointF(n*SIZE1,(100-m)*SIZE2) ;
+				  PointF b = PointF(n*SIZE1+SIZE1,(100-m)*SIZE2);
+				  PointF c = PointF(n*SIZE1,(100-m)*SIZE2+SIZE2);
+				  PointF d = PointF(n*SIZE1+SIZE1,(100-m)*SIZE2+SIZE2);
 
 
 				tr2(a.x,a.y, z,
@@ -2938,8 +3020,7 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 
 	if(playing)
 	{
-		
-		int n;
+		 
 
 
 			crossX = gish.medium().x - YROT;
@@ -2959,7 +3040,7 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 			pom
 
 		
-			::ShowImpactLine(&gish);
+					gameRender.ShowImpactLine(&gish, crossX, crossY);
 
 			
 				
@@ -2974,7 +3055,7 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 				for (int i = 0; i<doorCount; i++)
 				{  
 					if(researchedUnit(door[i].A))
-					ShowDoor(&door[i]);	
+						gameRender.ShowDoor(&door[i]);
 				
 				}
 				glEnd();
@@ -3010,9 +3091,9 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 					  if(n >=0 && m>=0 && n<100 && m<100)
 					  {
 						 if(prim[desc[n][m].num1].type == GEO)
-							ShowPrimitive(&prim[desc[n][m].num1]);
+							 gameRender.ShowPrimitive(&prim[desc[n][m].num1]);
 						 if(prim[desc[n][m].num2].type == GEO)
-							ShowPrimitive(&prim[desc[n][m].num2]);	
+							 gameRender.ShowPrimitive(&prim[desc[n][m].num2]);
 					  }
 
 				  } 
@@ -3023,14 +3104,19 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 				 
 				 
 				//ShowBackgroundField(cameraPos, area);
-				ShowField();
+				gameRender.ShowField();
 
 
 				//SUPER WEAPON SHOW balls
 				//doff 
 				for (pBall = ball.begin(); pBall != ball.end(); pBall++)
 				{
-					pBall->Show(0, 0);
+					pum
+						glTranslatef(pBall->x, pBall->y, 0);
+						glColor3f(pBall->cred, pBall->cgreen, pBall->cblue);
+						glutSolidSphere(pBall->radius , 8, 8);
+					pom
+
 				}
 				//	don
 
@@ -3044,9 +3130,9 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 						if (n >= 0 && m >= 0 && n < 100 && m < 100)
 						{
 							if (prim[desc[n][m].num1].type != GEO && prim[desc[n][m].num1].typeOfImpact == EVIL)
-								ShowPrimitive(&prim[desc[n][m].num1]);
+								gameRender.ShowPrimitive(&prim[desc[n][m].num1]);
 							if (prim[desc[n][m].num2].type != GEO && prim[desc[n][m].num2].typeOfImpact == EVIL)
-								ShowPrimitive(&prim[desc[n][m].num2]);
+								gameRender.ShowPrimitive(&prim[desc[n][m].num2]);
 						}
 
 					}
@@ -3060,9 +3146,9 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 						{
 							if (prim[desc[n][m].num1].type == FORBOMB) continue;
 							if (prim[desc[n][m].num1].type != GEO && prim[desc[n][m].num1].typeOfImpact == GOOD)
-								ShowPrimitive(&prim[desc[n][m].num1]);
+								gameRender.ShowPrimitive(&prim[desc[n][m].num1]);
 							if (prim[desc[n][m].num2].type != GEO && prim[desc[n][m].num2].typeOfImpact == GOOD)
-								ShowPrimitive(&prim[desc[n][m].num2]);
+								gameRender.ShowPrimitive(&prim[desc[n][m].num2]);
 						}
 
 					}
@@ -3090,10 +3176,10 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 						  {
 					
 								
-							  PointF a = ToPointF(n*SIZE1,(100-m)*SIZE2);
-							  PointF b = ToPointF(n*SIZE1+SIZE1,(100-m)*SIZE2);
-							  PointF c = ToPointF(n*SIZE1,(100-m)*SIZE2+SIZE2); 
-							  PointF d = ToPointF(n*SIZE1+SIZE1,(100-m)*SIZE2+SIZE2);  
+							  PointF a = PointF(n*SIZE1,(100-m)*SIZE2);
+							  PointF b = PointF(n*SIZE1+SIZE1,(100-m)*SIZE2);
+							  PointF c = PointF(n*SIZE1,(100-m)*SIZE2+SIZE2); 
+							  PointF d = PointF(n*SIZE1+SIZE1,(100-m)*SIZE2+SIZE2);  
 						
 						
 							tr2(a.x,a.y, z,   
@@ -3140,9 +3226,9 @@ void displayByCamera(PointF cameraPos, int interval, int area)
 					  if(n >=0 && m>=0 && n<100 && m<100)
 					  {
 						  if( prim[desc[n][m].num1].type == FORBOMB)
-							ShowPrimitive(&prim[desc[n][m].num1]);
+							  gameRender.ShowPrimitive(&prim[desc[n][m].num1]);
 						 if(prim[desc[n][m].num2].type == FORBOMB)
-							ShowPrimitive(&prim[desc[n][m].num2]);	
+							  gameRender.ShowPrimitive(&prim[desc[n][m].num2]);
 					  }
 
 				  }	
@@ -3289,7 +3375,7 @@ displayByCamera(camHero,0,12);
 		
 	//	displayByCamera(camHero,0,12);
 
-	//	displayByCamera(ToPointF(weapon[BOMB].x,weapon[BOMB].y+50),10,5);
+	//	displayByCamera(PointF(weapon[BOMB].x,weapon[BOMB].y+50),10,5);
 	//	glutSwapBuffers();
 
 

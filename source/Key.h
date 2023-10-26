@@ -1,6 +1,8 @@
 #ifndef _key_h_
 #define _key_h_
 
+#include "Unit.h"
+
 #define YELLOW  0
 #define BLUE	1
 #define RED		2
@@ -10,20 +12,11 @@ class Key: public Unit
 {
 public:
 	int NUM;
-	Key () {}
+	Key ();
 	
-	void actionOnTime(int numInterval) 
-	{
-	}
+	void actionOnTime(int numInterval);
 
-	void set(int num, float x, float y )
-	{
-		NUM = num;
-		radius = 20;
-		setPos(x,y);
-		setCorrect();
-
-	}
+	void set(int num, float x, float y );
 
 };
 

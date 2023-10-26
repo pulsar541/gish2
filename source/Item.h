@@ -1,6 +1,8 @@
 #ifndef _item_h_
 #define _item_h_
 
+#include "unit.h"
+
 enum ItemTypes 
 {
 	HEALTH,
@@ -11,22 +13,12 @@ enum ItemTypes
 class Item:public Unit
 {
 public:
-	Item()
-	{
-		radius = 5+rand()%15;
-	}
+	Item();
 	int type;
 
-	void actionOnTime(int intervalMilliSec)
-	{
-	
-	}
+	void actionOnTime(int intervalMilliSec);
 
-	void setType(int type)
-	{
-		this->type = type;
-		
-	}
+	void setType(int type);
 };
 
 #endif

@@ -1,15 +1,14 @@
 #ifndef _gameobject_h_
 #define _gameobject_h_
 
-#include <windows.h>
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
+ #include <windows.h>
+ #include <math.h>
+ #include <stdio.h>
+ #include <stdlib.h>
 #include <conio.h>
-#include <vector>
+//#include <vector>
 #include <time.h>
-
-
+ 
 #define GOOD 0
 #define EVIL 1
 
@@ -19,7 +18,7 @@
 class GameObject
 {
 private:
-	int intervals[MAX_INTERVALS];
+	unsigned long intervals[MAX_INTERVALS];
 public:
 	unsigned long starttime[MAX_INTERVALS];
 	unsigned long time[MAX_INTERVALS];
