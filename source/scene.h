@@ -3,15 +3,10 @@
 
 #include "font.h"
 
-class Scene
-{public:
+struct Scene
+{ 
 	CFont font;
-	CFont fontBig;
-	void init()
-	{
-
-	}
-
+	CFont fontBig; 
 };
 
 #endif

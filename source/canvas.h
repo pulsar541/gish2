@@ -1,6 +1,9 @@
 #ifndef CANVAS_H
 #define CANVAS_H
 
+
+#include "glut.h"
+
 inline void tr(float ax,float ay,float az,
 		float bx,float by,float bz,
 		float cx,float cy,float cz

@@ -128,21 +128,38 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cell.cpp" />
+    <ClCompile Include="door.cpp" />
+    <ClCompile Include="draw.cpp" />
+    <ClCompile Include="DropUnit.cpp" />
+    <ClCompile Include="enemy.cpp" />
     <ClCompile Include="font.cpp" />
+    <ClCompile Include="Item.cpp" />
+    <ClCompile Include="Key.cpp" />
+    <ClCompile Include="levelManager.cpp" />
     <ClCompile Include="m.cpp" />
+    <ClCompile Include="MyGish.cpp" />
+    <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="Point2d.cpp" />
+    <ClCompile Include="primitive.cpp" />
+    <ClCompile Include="trigonom.cpp" />
+    <ClCompile Include="unit.cpp" />
+    <ClCompile Include="weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Microsoft Visual Studio\VC98\Include\BASETSD.H" />
-    <ClInclude Include="building.h" />
     <ClInclude Include="canvas.h" />
+    <ClInclude Include="cell.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="door.h" />
     <ClInclude Include="draw.h" />
+    <ClInclude Include="DropUnit.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemyView.h" />
     <ClInclude Include="font.h" />
     <ClInclude Include="fvector.h" />
     <ClInclude Include="gameobject.h" />
+    <ClInclude Include="glDefines.h" />
     <ClInclude Include="GLUT.H" />
     <ClInclude Include="impact.h" />
     <ClInclude Include="Item.h" />
@@ -150,13 +167,14 @@
     <ClInclude Include="levelManager.h" />
     <ClInclude Include="MyGish.h" />
     <ClInclude Include="myline.h" />
-    <ClInclude Include="mymath.h" />
     <ClInclude Include="mystuctures.h" />
     <ClInclude Include="phys.h" />
+    <ClInclude Include="Physics.h" />
+    <ClInclude Include="Point2d.h" />
     <ClInclude Include="primitive.h" />
     <ClInclude Include="primitiveMath.h" />
     <ClInclude Include="scene.h" />
-    <ClInclude Include="spisok.h" />
+    <ClInclude Include="trigonom.h" />
     <ClInclude Include="unit.h" />
     <ClInclude Include="weapon.h" />
   </ItemGroup>

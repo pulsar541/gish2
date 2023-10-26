@@ -3,6 +3,8 @@
 
 
 #include "canvas.h"
+#include "glDefines.h"
+#include "trigonom.h"
 
  class MyLine
 	{
@@ -34,6 +36,9 @@
 		 float Width;
 
 		 bool invertNormal;
+
+		 bool SH1 = false;
+
 
 		 MyLine ()
 		 {}
@@ -160,18 +165,19 @@
 		
 		 void Show2D ()
 		 { 	 glLineWidth(1);
-			 pum doff 
-				 loff
-		 	
-	 	
+			 pum 
+				 doff 
+					loff 
 			 glColor3f(0,0,0);
 			
 			 glBegin(GL_LINES);
 			 glVertex3f(a.x,a.y,Width+3);
 			 glVertex3f(b.x,b.y,Width+3);
 			 glEnd();
-				
-			pom don lon
+				 
+					lon
+				don 
+			pom 
 		 }
 			 
 

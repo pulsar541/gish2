@@ -52,7 +52,7 @@
 
 		void  calc_in_water( )
 		{	
-			y1+= (gravity/SLOMO_K + gravity/SLOMO_K*0.4);
+			y1+= (gravity/SLOMO_K + gravity/SLOMO_K*0.4f);
 		}
 		
 		void  calc_veter(float massa, float xa,float ya )
