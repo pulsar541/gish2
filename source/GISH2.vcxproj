@@ -133,11 +133,15 @@
     <ClCompile Include="draw.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="font.cpp" />
+    <ClCompile Include="fvector.cpp" />
+    <ClCompile Include="gameobject.cpp" />
+    <ClCompile Include="impact.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Key.cpp" />
     <ClCompile Include="levelManager.cpp" />
     <ClCompile Include="m.cpp" />
     <ClCompile Include="MyGish.cpp" />
+    <ClCompile Include="myline.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Point2d.cpp" />
     <ClCompile Include="primitive.cpp" />
@@ -147,7 +151,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Microsoft Visual Studio\VC98\Include\BASETSD.H" />
-    <ClInclude Include="canvas.h" />
     <ClInclude Include="cell.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="door.h" />
@@ -165,12 +168,9 @@
     <ClInclude Include="levelManager.h" />
     <ClInclude Include="MyGish.h" />
     <ClInclude Include="myline.h" />
-    <ClInclude Include="mystuctures.h" />
-    <ClInclude Include="phys.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Point2d.h" />
     <ClInclude Include="primitive.h" />
-    <ClInclude Include="primitiveMath.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="trigonom.h" />
     <ClInclude Include="unit.h" />

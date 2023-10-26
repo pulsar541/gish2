@@ -63,12 +63,21 @@
     <ClCompile Include="draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="impact.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fvector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gameobject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="myline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Microsoft Visual Studio\VC98\Include\BASETSD.H">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="canvas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="constants.h">
@@ -116,16 +125,7 @@
     <ClInclude Include="myline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mystuctures.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="phys.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="primitive.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="primitiveMath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="scene.h">

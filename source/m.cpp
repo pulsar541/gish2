@@ -2697,8 +2697,7 @@ glutDisplayFunc(myDisplay);
                                 wsprintf( szName, "%8.8X", dwLangID );
     hKbLayout = LoadKeyboardLayout( szName, KLF_REPLACELANG );
 	
-
-
+ 
 	
 	glutMainLoop();	
 
@@ -2708,7 +2707,6 @@ glutDisplayFunc(myDisplay);
      UnloadKeyboardLayout( hKbLayout );
     }
 
-	getch();
 
 	return 0;
 }

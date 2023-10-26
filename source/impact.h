@@ -16,27 +16,11 @@ public:
 	float H;
 	int type;
 	float ammoDist; 
-	Impact()
-	{	
-	}
+	Impact();
 
-	void set(int type)
-	{
-		H=100;
-		this->type = type;
-		radius = 0;
-		ammoDist = 2000;
-		setCorrect();
-		typeOfImpact = EVIL;
-	}
-
-
-
+	void set(int type); 
 	 
-    void actionOnTime(int numAction)
-	{
-
-	}
+    void actionOnTime(int numAction);
 
 };
 

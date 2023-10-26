@@ -1,12 +1,11 @@
 #ifndef _gameobject_h_
 #define _gameobject_h_
 
- #include <windows.h>
- #include <math.h>
- #include <stdio.h>
- #include <stdlib.h>
+#include <windows.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <conio.h>
-//#include <vector>
 #include <time.h>
  
 #define GOOD 0
@@ -30,62 +29,20 @@ public:
 //	int intervalMilliSec;
 
 	bool correct;
-	GameObject()
-	{
-			typeOfImpact = GOOD;
-			restart();
-
-			for(int i=0;i<MAX_INTERVALS;i++)
-				intervals[i] = 0;
-			
-			correct = false;
-
-	}
+	GameObject();
 
 	virtual void 	actionOnTime(int numAction) = 0;
 
-	bool corrected()
-	{
-		return correct;
-	}
+	bool corrected();
 
-	void setCorrect()
-	{
-		correct = true;
-	}
-	void setInterval(int index, int intervalsMilliSec)
-	{
-		if(index >= 0 && index < MAX_INTERVALS)
-			intervals[index] = intervalsMilliSec;
-
-		starttime[index] = timeGetTime() - rand()% timeGetTime() ;
-		restart();
-	}
+	void setCorrect();
+	void setInterval(int index, int intervalsMilliSec);
 
 
-	bool timer()
-	{	
-		for(int i=0;i<MAX_INTERVALS;i++)
-			time[i] = timeGetTime()-starttime[i]; 
-
-		bool flag = false;
-		for(int i=0;i<MAX_INTERVALS;i++)
-		{
-		  if ( intervals[i]!=0 && (time[i] >= intervals[i] || starttime[i] == timeGetTime()) )
-		  {	starttime[i] += time[i];
-			actionOnTime(i);
-			flag = true;
-		  }
-		}
-		return flag;
-
-	}
+	bool timer();
 
 
-	void restart()
-	{	for(int i=0;i<MAX_INTERVALS;i++)
-			starttime[i] = timeGetTime();
-	}
+	void restart();
 
 
 };

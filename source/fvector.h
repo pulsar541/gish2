@@ -15,61 +15,26 @@
 		public: float r;
 		public: float R;
 			static  float gravity;
-		FVector()
-		{
-			//
-			// TODO: Add constructor logic here
-			//
-		}
+		FVector();
 		void calc_kas(float oldx,    
 					  float oldy,   
 					   // flolat oldz,
 					  float x,    
 					  float y//,    
 							// flolat z
-				  	 )  
-		{ 
-
-			x0=x;
-			y0=y;
-		//	z0=z;
-			 
-			x1=x+(x-oldx);
-			y1=y+(y-oldy);
-			//z1=z+(z-oldz);
-
-		}
+				  	 );
 		
-		void  calc_gravity()
-		{
-			y1-=gravity/SLOMO_K;
-		}
+		void  calc_gravity();
 
-		void  calc_antigravity()
-		{
-			y1+=gravity/SLOMO_K;
-		}
+		void  calc_antigravity();
 
-		void  calc_in_water( )
-		{	
-			y1+= (gravity/SLOMO_K + gravity/SLOMO_K*0.4f);
-		}
+		void  calc_in_water( );
 		
-		void  calc_veter(float massa, float xa,float ya )
-		{
-			x1+=gravity/SLOMO_K;
-		}
+		void  calc_veter(float massa, float xa,float ya );
 
-		void add(FVector *vector)
-		{
-		
-		}
+		void add(FVector *vector);
 
-		void addImpulse(float impx, float impy)
-		{
-			this->x1 += impx; 
-			this->y1 += impy;
-		}
+		void addImpulse(float impx, float impy);
 
 	};
 
