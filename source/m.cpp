@@ -11,6 +11,7 @@ using namespace std;
 int winW = 1;
 int winH = 1;
 
+int windowNum = 0;
 
 
 #include "constants.h" 
@@ -765,6 +766,8 @@ void MyMouseFunc();
 void OpenLevelDialogProcess();
 
 
+ 
+
 int deathPause = 0;
 
 void myIdle()
@@ -844,10 +847,19 @@ void myIdle()
 //		     setNight();
 			weapon[BOMB].health = gish.H = 100;	
 			PointF tmpP = respawnPoint;
-			LoadLevel((char*)levelManager.getCurrentLevel().c_str());
+			//LoadLevel((char*)levelManager.getCurrentLevel().c_str());
 			gish.SetPos(tmpP.x, tmpP.y);
+			moveUP = false;
+			moveDOWN = false;
+			moveLEFT = false;
+			moveRIGHT = false;
+			moveUP_2 = false;
+			moveDOWN_2 = false;
+			moveLEFT_2 = false;
+			moveRIGHT_2 = false;
+			deathPause=0; 
 
-			deathPause=0;
+
 		  }
 		  
 	  }
@@ -855,7 +867,18 @@ void myIdle()
 
 	  if (trigonom::Dist(gish.medium(), exitLevel) < 50) {
 		//LoadLevel((char*)levelManager.nextLevel("mapscript.dat").c_str());
+
+		 
 		  OpenLevelDialogProcess();
+
+		  moveUP = false;
+		  moveDOWN = false;
+		  moveLEFT = false;
+		  moveRIGHT = false;
+		  moveUP_2 = false;
+		  moveDOWN_2 = false;
+		  moveLEFT_2 = false;
+		  moveRIGHT_2 = false;
 	  }
 
 	  for(int d=0; door[d].corrected(); d++)
@@ -2269,6 +2292,9 @@ void OpenLevelDialogProcess()
 						LoadLevel((char*)buffer);
 						levelManager.numCurrentLevel--;
 						levelManager.currentLevel = buffer;
+
+
+				 
 					}
 
 					CoTaskMemFree(pszFilePath);
@@ -3296,7 +3322,7 @@ void myDisplay()
 	glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-displayByCamera(camHero,0,12); 
+displayByCamera(camHero,0,16); 
 
 
 

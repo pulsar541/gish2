@@ -12,7 +12,7 @@ float UDANG = 0.0;
 int WIDTH = 75;
 int ZFAR = 10000;
 int viewAngle = 40;
-int DISTANCETOSCENE = 1200;//1200;
+int DISTANCETOSCENE = 1200;
 bool pauseMode = false;
  
 int TOTALCOUNT =100; 
