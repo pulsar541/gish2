@@ -1,19 +1,12 @@
 #pragma once
-
-//#include "building.h"
-
+ 
 #include <vector>
 using namespace std;
 
 //#include "primitive.h"
 #include "weapon.h"
 #include "Physics.h"
-#include "DropUnit.h"
-
-/*
-
-*/
-
+ 
 
 class MyGish: public GameObject 
 {
@@ -22,7 +15,8 @@ public:
 	bool SKOL  ;
 	bool TVER ;	
 	bool FIRE ;
-	DropUnit *bui[100];
+	
+	Unit *bui[100];
 	int N ;
 	float H ,oldH;	
 	float Ox ;

@@ -63,9 +63,6 @@
     <ClCompile Include="draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DropUnit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Microsoft Visual Studio\VC98\Include\BASETSD.H">
@@ -153,9 +150,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="trigonom.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DropUnit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

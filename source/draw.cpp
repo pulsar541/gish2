@@ -1162,7 +1162,9 @@ bool ly[10000];
 	glNewList(50005, GL_COMPILE);
 	pum;
 
-	glTranslatef(0, 0, -2000);
+	int zlength = 2000;
+
+	glTranslatef(0, 0, -zlength);
 
 	//	glEnable(GL_POLYGON_SMOOTH);
 	glNormal3f(0, 0, 1);
@@ -1222,7 +1224,7 @@ bool ly[10000];
 			}
 			*/
 
-			float z = trigonom::minirand() * 1000;
+			float z = trigonom::minirand() * (zlength * 0.5f);
 			//
 			{
 				//	//	glColor3f(0,0,0);	

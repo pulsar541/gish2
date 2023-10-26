@@ -33,46 +33,14 @@ int winH = 1;
 
 Physics phys;
  
-  
-
-
-
-
-
-/*
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <conio.h>
-#include <time.h>
-#include <vector>
-#include <sstream>
-#include <stringapiset.h>
-#include <shobjidl_core.h>
-#include <winbase.h>
-*/
-
-
-
-
 using namespace std;
 
 float crossX ;
 float crossY ;
 int curDescI, curDescJ;
  
-
-/*
-
-#include "scene.h"
-
-*/
- 
 CELL desc[100][100];
-
-
 bool onlgt[2];
-
 
 bool moveUP=false;
 bool moveDOWN=false;
@@ -871,7 +839,7 @@ void myIdle()
 		  gish.H = 0 ;
 		  deathPause++;
 		  setDeath();
-		  if(deathPause > 15) 
+		  if(deathPause > 150) 
 		  {	 //glClearColor(0,0,0,1);
 //		     setNight();
 			weapon[BOMB].health = gish.H = 100;	

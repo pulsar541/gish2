@@ -131,7 +131,6 @@
     <ClCompile Include="cell.cpp" />
     <ClCompile Include="door.cpp" />
     <ClCompile Include="draw.cpp" />
-    <ClCompile Include="DropUnit.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="font.cpp" />
     <ClCompile Include="Item.cpp" />
@@ -153,7 +152,6 @@
     <ClInclude Include="constants.h" />
     <ClInclude Include="door.h" />
     <ClInclude Include="draw.h" />
-    <ClInclude Include="DropUnit.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemyView.h" />
     <ClInclude Include="font.h" />

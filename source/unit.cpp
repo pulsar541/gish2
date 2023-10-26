@@ -17,13 +17,25 @@
 	correct = false;
 	massCategory = 0;
 	moveble = false;
+
+
+
 }
 
- Unit::Unit(float x, float y, float radius)
-{
-	Unit();
-	setPos(x, y);
-	setRadius(radius);
+ Unit::Unit(float x, float y, float radius)	 
+ {
+	 isMassive = 1;
+	 friction = true;
+	 spirit = false;
+	 inWater = false;
+	 inertion = 1;
+	 correct = false;
+	 massCategory = 0;
+	 moveble = false;
+	  
+ 	 setPos(x, y);
+ 	 setRadius(radius); 
+	  
 }
 
  void Unit::setPos(float x, float y)

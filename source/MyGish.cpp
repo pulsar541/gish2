@@ -34,7 +34,7 @@
  void MyGish::SetPos(float x, float y)
 {
 	for (int i = 0; i < N; i++) {
-		bui[i] = new DropUnit(
+		bui[i] = new Unit(
 			x + 70 * sin((float)i * _torad * 15),
 			y + 70 * cos((float)i * _torad * 15),
 			6.2f);
